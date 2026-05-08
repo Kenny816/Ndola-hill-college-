@@ -1,0 +1,78 @@
+<%- include('partials/header') %>
+
+<div class="container my-5">
+  <h1 class="text-green-dark mb-4">Student Application</h1>
+  <form action="/apply" method="POST" enctype="multipart/form-data">
+    <h5>Personal Information</h5>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="form-label">Full Name</label>
+        <input type="text" name="fullName" class="form-control" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">NRC Number</label>
+        <input type="text" name="nrc" class="form-control" required>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="form-label">Date of Birth</label>
+        <input type="date" name="dob" class="form-control" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Gender</label>
+        <select name="gender" class="form-select">
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+      </div>
+    </div>
+    <h5>Contact</h5>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="form-label">Phone</label>
+        <input type="tel" name="phone" class="form-control" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" class="form-control" required>
+      </div>
+    </div>
+    <h5>Programme Choice</h5>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="form-label">Programme</label>
+        <select name="program" class="form-select" required>
+          <% programs.forEach(p => { %>
+            <option value="<%= p.id %>"><%= p.name %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Entry Year</label>
+        <select name="year" class="form-select">
+          <option>2026</option>
+          <option>2027</option>
+        </select>
+      </div>
+    </div>
+    <h5>Document Uploads</h5>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="form-label">Grade 12 Results</label>
+        <input type="file" name="grade12" class="form-control" required>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">NRC Copy</label>
+        <input type="file" name="nrc_copy" class="form-control" required>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Passport Photo</label>
+        <input type="file" name="photo" class="form-control">
+      </div>
+    </div>
+    <button type="submit" class="btn btn-gold btn-lg">Submit Application</button>
+  </form>
+</div>
+
+<%- include('partials/footer') %>

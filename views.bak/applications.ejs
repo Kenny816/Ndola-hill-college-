@@ -1,0 +1,23 @@
+<%- include('partials/header') %>
+<div class="container my-4">
+  <h1 class="text-green-dark mb-4">All Applications</h1>
+  <div class="table-responsive">
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr><th>Name</th><th>Phone</th><th>Programme</th><th>Year</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <% applications.forEach(function(app){ %>
+          <tr>
+            <td><%= app.fullName %></td>
+            <td><%= app.phone %></td>
+            <td><%= app.program %></td>
+            <td><%= app.year %></td>
+            <td><%= app.status %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<%- include('partials/footer') %>

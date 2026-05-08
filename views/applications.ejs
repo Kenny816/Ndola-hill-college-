@@ -1,15 +1,151 @@
-<!DOCTYPE html>
-<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Applications</title>
-<style>body{margin:0;font-family:sans-serif;background:#f4f6f8}.top-bar{background:#0b5e2f;color:white;padding:12px 20px;display:flex;justify-content:space-between;align-items:center}.nav a{color:white;margin:0 10px;text-decoration:none}.container{max-width:1200px;margin:20px auto;padding:0 20px}.card{background:white;padding:20px;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.05);overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:800px}th{background:#eaeaea;padding:8px}td{padding:8px;border-bottom:1px solid #ddd}.badge{padding:3px 8px;border-radius:10px;color:white;font-size:0.75rem;font-weight:bold}.badge-PENDING{background:#f39c12}.badge-ACCEPTED{background:#2980b9}.badge-REJECTED{background:#c0392b}.btn{display:inline-block;padding:6px 12px;border-radius:4px;text-decoration:none;font-size:0.85rem;margin:2px}.btn-primary{background:#0b5e2f;color:white}.btn-success{background:#2980b9;color:white}.btn-danger{background:#c0392b;color:white}</style>
-</head><body>
-<div class="top-bar"><h1>Applications</h1><nav class="nav"><a href="/admin/dashboard">Dashboard</a><a href="/admin/programs">Programmes</a><a href="/admin/applications">Applications</a><a href="/admin/settings">Settings</a><a href="/admin/logout">Logout</a></nav></div>
-<div class="container"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:15px"><h2>Applications</h2><form method="GET" action="/admin/applications"><select name="filter" onchange="this.form.submit()" style="padding:8px;border-radius:4px"><option value="ALL" <%= filter=='ALL'?'selected':'' %>>All</option><option value="PENDING" <%= filter=='PENDING'?'selected':'' %>>Pending</option><option value="ACCEPTED" <%= filter=='ACCEPTED'?'selected':'' %>>Accepted</option><option value="REJECTED" <%= filter=='REJECTED'?'selected':'' %>>Rejected</option></select></form></div>
-<div class="card"><table><tr><th>App ID</th><th>Student</th><th>Programme</th><th>Type</th><th>Status</th><th>Docs</th><th>Action</th></tr>
-<% applications.forEach(app => { %><tr><td><%= app.id %></td><td><%= app.student %></td><td><%= app.progName %></td><td><%= app.courseType || '-' %></td>
-<td><span class="badge badge-<%= app.status %>"><%= app.status %></span></td>
-<td><% if(app.grade12File) { %><a href="/uploads/<%= app.grade12File %>" target="_blank" class="btn btn-primary">G12</a><% } %><% if(app.nrcFile) { %><a href="/uploads/<%= app.nrcFile %>" target="_blank" class="btn btn-primary">NRC</a><% } %><% if(!app.grade12File && !app.nrcFile){ %>–<% } %></td>
-<td><a href="/admin/review/<%= app.id %>" class="btn btn-primary">Review</a>
-<% if(app.status=='PENDING'){ %><a href="/admin/accept/<%= app.id %>" class="btn btn-success">Accept</a> <a href="/admin/reject/<%= app.id %>" class="btn btn-danger">Reject</a><% } %></td></tr><% }) %>
-</table></div></div>
-<footer style="background:#0b5e2f;color:white;padding:15px;text-align:center;margin-top:30px;">&copy; 2026 Admin Panel</footer>
-</body></html>
+<%- include('partials/admin_header') %>
+<style>
+  .app-card { border: 1px solid #e0e0e0; border-radius: 12px; transition: box-shadow 0.2s, transform 0.2s; }
+  .app-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-2px); }
+  .doc-link { color: var(--green-dark); font-weight: 500; }
+  .doc-link:hover { text-decoration: underline; }
+</style>
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+  <h2 class="text-green-dark mb-0"><i class="fas fa-th-large me-2"></i>Applications</h2>
+  <div class="d-flex gap-2">
+    <input type="text" id="searchCards" class="form-control" placeholder="Search by name or programme..." style="min-width:250px;">
+    <a href="/admin/applications/export" class="btn btn-gold"><i class="fas fa-download me-1"></i>Export CSV</a>
+  </div>
+</div>
+<div class="row g-4" id="appsGrid">
+  <% if (applications.length === 0) { %><div class="col-12"><p class="text-muted">No pending/rejected applications.</p></div><% } %>
+  <% applications.forEach(function(app, idx) { %>
+    <div class="col-xl-4 col-lg-6 app-tile" data-name="<%= (app.fullName||'').toLowerCase() %>" data-program="<%= (app.program||'').toLowerCase() %>">
+      <div class="app-card bg-white p-3 d-flex flex-column h-100">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <div>
+            <h5 class="fw-bold mb-0"><%= app.fullName %></h5>
+            <small class="text-muted"><%= app.program %></small>
+          </div>
+          <div>
+            <% if (app.status === 'Rejected') { %><span class="badge bg-danger">Rejected</span>
+            <% } else { %><span class="badge bg-warning text-dark">Pending</span><% } %>
+          </div>
+        </div>
+        <p class="mb-1 small"><i class="fas fa-phone-alt me-1 text-muted"></i><%= app.phone %></p>
+        <p class="mb-2 small"><i class="fas fa-calendar-alt me-1 text-muted"></i><%= app.date %></p>
+        <div class="mt-auto d-flex gap-2 flex-wrap">
+          <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#detailModal<%= idx %>"><i class="fas fa-eye me-1"></i>View Details</button>
+          <button class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal<%= idx %>"><i class="fas fa-edit me-1"></i>Edit</button>
+          <form method="POST" action="/admin/review/<%= app.id %>" class="d-inline">
+            <input type="hidden" name="status" value="Approved">
+            <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-check me-1"></i>Accept</button>
+          </form>
+          <form method="POST" action="/admin/review/<%= app.id %>" class="d-inline">
+            <input type="hidden" name="status" value="Rejected">
+            <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-times me-1"></i>Reject</button>
+          </form>
+          <form method="POST" action="/admin/applications/delete/<%= app.id %>" class="d-inline" onsubmit="return confirm('Delete application permanently?');">
+            <button type="submit" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash me-1"></i>Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detail Modal (unchanged) -->
+    <div class="modal fade" id="detailModal<%= idx %>" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header bg-green-dark text-white">
+            <h5 class="modal-title"><%= app.fullName %> – <%= app.program %></h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6">
+                <p><strong>Application ID:</strong> <%= app.id %></p>
+                <p><strong>NRC:</strong> <%= app.nrc %></p>
+                <p><strong>Date of Birth:</strong> <%= app.dob || '—' %></p>
+                <p><strong>Gender:</strong> <%= app.gender || '—' %></p>
+                <p><strong>Nationality:</strong> <%= app.nationality || '—' %></p>
+                <p><strong>Address:</strong> <%= app.address || '—' %></p>
+              </div>
+              <div class="col-md-6">
+                <p><strong>Phone:</strong> <%= app.phone %></p>
+                <p><strong>Email:</strong> <%= app.email || '—' %></p>
+                <p><strong>Programme:</strong> <%= app.program %></p>
+                <p><strong>Entry Year:</strong> <%= app.year %></p>
+                <p><strong>Previous School:</strong> <%= app.school || '—' %></p>
+                <p><strong>Year Completed:</strong> <%= app.yearCompleted || '—' %></p>
+              </div>
+            </div>
+            <% if (app.motivation) { %><hr><h6>Motivation Statement</h6><p><%= app.motivation %></p><% } %>
+            <hr>
+            <h6>Uploaded Documents</h6>
+            <% ['grade12','nrc_copy','photo'].forEach(function(doc) { %>
+              <div class="mb-2">
+                <strong><%= doc === 'grade12' ? 'Grade 12 Results' : (doc === 'nrc_copy' ? 'NRC Copy' : 'Passport Photo') %>:</strong>
+                <% if (app.documents && app.documents[doc]) { %>
+                  <a href="<%= app.documents[doc] %>" target="_blank" class="ms-2"><i class="fas fa-eye"></i> View</a>
+                  <a href="/download/<%= app.documents[doc].split('/').pop() %>" class="ms-2"><i class="fas fa-download"></i> Download</a>
+                  <form method="POST" action="/admin/documents/delete" class="d-inline ms-2" onsubmit="return confirm('Delete this file?')">
+                    <input type="hidden" name="appId" value="<%= app.id %>">
+                    <input type="hidden" name="field" value="<%= doc %>">
+                    <input type="hidden" name="filename" value="<%= app.documents[doc].split('/').pop() %>">
+                    <button type="submit" class="btn btn-sm p-0 text-danger" title="Delete file"><i class="fas fa-trash-alt"></i></button>
+                  </form>
+                <% } else { %><span class="text-muted ms-2">Not uploaded</span><% } %>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editModal<%= idx %>" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header bg-green-dark text-white">
+            <h5 class="modal-title">Edit Application – <%= app.fullName %></h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <form method="POST" action="/admin/applications/edit/<%= app.id %>">
+            <div class="modal-body">
+              <div class="mb-3">
+                <label>Full Name</label>
+                <input type="text" name="fullName" class="form-control" value="<%= app.fullName %>" required>
+              </div>
+              <div class="mb-3">
+                <label>Phone</label>
+                <input type="text" name="phone" class="form-control" value="<%= app.phone %>">
+              </div>
+              <div class="mb-3">
+                <label>Email</label>
+                <input type="email" name="email" class="form-control" value="<%= app.email || '' %>">
+              </div>
+              <div class="mb-3">
+                <label>Programme</label>
+                <input type="text" name="program" class="form-control" value="<%= app.program %>">
+              </div>
+              <div class="mb-3">
+                <label>Entry Year</label>
+                <input type="text" name="year" class="form-control" value="<%= app.year %>">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-gold">Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+</div>
+
+<script>
+document.getElementById('searchCards').addEventListener('input', function() {
+  var q = this.value.toLowerCase();
+  document.querySelectorAll('.app-tile').forEach(function(tile) {
+    var name = tile.getAttribute('data-name');
+    var prog = tile.getAttribute('data-program');
+    tile.style.display = (name.includes(q) || prog.includes(q)) ? '' : 'none';
+  });
+});
+</script>
+<%- include('partials/admin_footer') %>

@@ -1,32 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact – Ndola Hill College</title>
-  <style>
-    :root { --green-dark: #0b5e2f; }
-    .top-bar { background: var(--green-dark); color: white; padding: 12px 20px; display: flex; justify-content: space-between; }
-    .map-responsive { overflow: hidden; padding-bottom: 56.25%; position: relative; height: 0; margin-bottom: 20px; }
-    .map-responsive iframe { left: 0; top: 0; height: 100%; width: 100%; position: absolute; }
-    .hours { background: white; padding: 20px; border-radius: 8px; }
-  </style>
-</head>
-<body>
-<div class="top-bar"><h1>Ndola Hill College</h1><nav class="nav"><a href="/">Home</a><a href="/programmes">Programmes</a><a href="/apply">Apply Now</a><a href="/about">About</a><a href="/contact">Contact</a></nav></div>
-
-<div class="container">
-  <h1>Contact Us</h1>
-  <div class="map-responsive">
-    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d121063.34502385724!2d28.616853!3d-12.968270!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1972793a3e5b4b7b%3A0x1a2b3c4d5e6f7a8b!2sNdola!5e0!3m2!1sen!2szm!4v1616161616161" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+<%- include('partials/header') %>
+<section class="bg-green-dark text-white py-5 text-center">
+  <div class="container">
+    <h1 class="display-5 fw-bold">Contact Us</h1>
+    <p class="lead mb-0">We'd love to hear from you.</p>
   </div>
-  <div class="hours">
-    <h2>Office Hours</h2>
-    <p>Monday – Friday: 08:00 – 17:00</p>
-    <p>Saturday: 09:00 – 12:00</p>
-    <p>Sunday: Closed</p>
+</section>
+<div class="container my-5">
+  <div class="row">
+    <div class="col-md-6 mb-4">
+      <div class="card shadow-sm h-100 p-4">
+        <h4 class="text-green-dark mb-3">Get in Touch</h4>
+        <p><i class="fas fa-map-marker-alt me-2 text-green-dark"></i> Mpelembe House, 5th Floor, Room 509, Ndola, Zambia</p>
+        <p><a href="https://wa.me/260971234567" class="text-dark text-decoration-none"><i class="fab fa-whatsapp me-2 text-success"></i>+260 97 1234567</a></p>
+        <p><a href="mailto:info@ndolahillcollege.edu.zm" class="text-dark text-decoration-none"><i class="fas fa-envelope me-2 text-green-dark"></i>info@ndolahillcollege.edu.zm</a></p>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card shadow-sm p-4">
+        <h4 class="text-green-dark mb-3">Send a Message</h4>
+        <form>
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Message</label>
+            <textarea class="form-control" rows="4" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-gold">Send Message</button>
+        </form>
+      </div>
+    </div>
   </div>
 </div>
-
 <%- include('partials/footer') %>
-</body>
-</html>

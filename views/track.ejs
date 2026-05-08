@@ -1,0 +1,30 @@
+<%- include('partials/header') %>
+<section class="bg-green-dark text-white py-5 text-center">
+  <div class="container">
+    <h1 class="display-5 fw-bold">Check Your Application Status</h1>
+    <p class="lead mb-0">Enter the details provided after you applied.</p>
+  </div>
+</section>
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <% if (typeof error !== 'undefined' && error) { %><div class="alert alert-danger"><%= error %></div><% } %>
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <form method="POST" action="/track/status">
+            <div class="mb-3">
+              <label class="form-label">Application ID</label>
+              <input type="text" name="appId" class="form-control" placeholder="e.g. APP001" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">NRC Number</label>
+              <input type="text" name="nrc" class="form-control" placeholder="Your NRC number" required>
+            </div>
+            <button type="submit" class="btn btn-gold w-100">Check Status</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('partials/footer') %>

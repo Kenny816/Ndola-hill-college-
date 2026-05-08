@@ -1,12 +1,12 @@
-<!DOCTYPE html>
-<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dashboard</title>
-<style>body{margin:0;font-family:sans-serif;background:#f4f6f8}.top-bar{background:#0b5e2f;color:white;padding:12px 20px;display:flex;justify-content:space-between;align-items:center}.nav a{color:white;margin:0 10px;text-decoration:none}.container{max-width:1000px;margin:20px auto;padding:0 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px}.card{background:white;padding:20px;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.05);text-align:center}.num{font-size:2.5rem;font-weight:bold}</style>
-</head><body>
-<div class="top-bar"><h1>Admin Panel</h1><nav class="nav"><a href="/admin/dashboard">Dashboard</a><a href="/admin/programs">Programmes</a><a href="/admin/applications">Applications</a><a href="/admin/settings">Settings</a><a href="/admin/logout">Logout</a></nav></div>
-<div class="container"><h2>Overview</h2><div class="grid">
-<div class="card"><h3>Programmes</h3><div class="num" style="color:#0b5e2f"><%= totalPrograms %></div></div>
-<div class="card"><h3>Pending</h3><div class="num" style="color:#f39c12"><%= pending %></div></div>
-<div class="card"><h3>Accepted</h3><div class="num" style="color:#2980b9"><%= accepted %></div></div>
-</div></div>
-<footer style="background:#0b5e2f;color:white;padding:15px;text-align:center;margin-top:30px;">&copy; 2026 Admin Panel</footer>
-</body></html>
+<%- include('partials/admin_header') %>
+<h2 class="text-green-dark mb-4">Admin Dashboard</h2>
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3"><div class="card bg-primary text-white shadow-sm"><div class="card-body"><h5 class="mb-1"><%= applications.length %></h5><p class="mb-0">Total Applications</p></div></div></div>
+  <div class="col-6 col-md-3"><div class="card bg-warning shadow-sm"><div class="card-body"><h5 class="mb-1"><%= pending %></h5><p class="mb-0">Pending</p></div></div></div>
+  <div class="col-6 col-md-3"><div class="card bg-success text-white shadow-sm"><div class="card-body"><h5 class="mb-1"><%= approved %></h5><p class="mb-0">Approved</p></div></div></div>
+  <div class="col-6 col-md-3"><div class="card bg-info text-white shadow-sm"><div class="card-body"><h5 class="mb-1"><%= programs.length %></h5><p class="mb-0">Programmes</p></div></div></div>
+</div>
+<div class="text-center mt-4">
+  <a href="/admin/applications" class="btn btn-gold btn-lg"><i class="fas fa-th-large me-2"></i>Manage Applications</a>
+</div>
+<%- include('partials/admin_footer') %>

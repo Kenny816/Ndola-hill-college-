@@ -2,26 +2,45 @@
   {
     "id": "P001",
     "name": "BSc Mining Engineering",
-    "capacity": 120
+    "capacity": 120,
+    "type": "Degree",
+    "duration": "4 years",
+    "fee": 38000,
+    "description": "This comprehensive degree covers all aspects of open‑pit and underground mining: rock mechanics, ventilation, mineral economics, and mine safety. Graduates are equipped for roles such as Mine Planner, Drill & Blast Engineer, and Production Supervisor. The programme includes a 12‑week industry internship.",
+    "applicationFee": 250,
+    "entryRequirements": "Full Grade 12 certificate with credits in Mathematics, Physics, and English."
   },
   {
     "id": "P002",
     "name": "Diploma in Mineral Processing",
-    "capacity": 80
+    "capacity": 80,
+    "type": "Diploma",
+    "duration": "2 years",
+    "fee": 22000,
+    "description": "Learn the principles of crushing, grinding, flotation, leaching, and tailings management. This hands‑on diploma includes practical sessions in our pilot processing plant and a 6‑week attachment with a mining company.",
+    "applicationFee": 200,
+    "entryRequirements": "Grade 12 certificate with at least passes in Science and Mathematics."
   },
   {
     "id": "P003",
     "name": "Certificate in Environmental Management",
-    "capacity": 60
+    "capacity": 60,
+    "type": "Certificate",
+    "duration": "1 year",
+    "fee": 12000,
+    "description": "A focused 1‑year certificate covering environmental impact assessment, waste management, and sustainable mining practices. Ideal for school leavers or industry workers seeking formal qualifications.",
+    "applicationFee": 150,
+    "entryRequirements": "Grade 12 certificate with any four subjects; no specific prerequisites."
   },
   {
     "id": "P004",
     "name": "BSc Computer Science",
-    "capacity": 150
-  },
-  {
-    "id": "P005",
-    "name": "Diploma in Electrical Engineering",
-    "capacity": 100
+    "capacity": 150,
+    "type": "Degree",
+    "duration": "4 years",
+    "fee": 35000,
+    "description": "Explore software engineering, data science, and networking. Our labs are equipped with modern hardware and students undertake a capstone project in their final year. Career paths include Developer, Systems Analyst, and IT Consultant.",
+    "applicationFee": 250,
+    "entryRequirements": "Grade 12 certificate with credit in Mathematics and English."
   }
 ]

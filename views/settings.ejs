@@ -1,15 +1,95 @@
-<!DOCTYPE html>
-<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Settings</title>
-<style>body{margin:0;font-family:sans-serif;background:#f4f6f8}.top-bar{background:#0b5e2f;color:white;padding:12px 20px;display:flex;justify-content:space-between;align-items:center}.nav a{color:white;margin:0 10px;text-decoration:none}.container{max-width:500px;margin:20px auto;padding:0 20px}.card{background:white;padding:20px;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.05)}input{width:100%;padding:8px;margin-bottom:10px;border:1px solid #ccc;border-radius:4px;box-sizing:border-box}button{background:#0b5e2f;color:white;padding:10px 20px;border:none;border-radius:4px;cursor:pointer}.message{color:green}.error{color:red}</style>
-</head><body>
-<div class="top-bar"><h1>Settings</h1><nav class="nav"><a href="/admin/dashboard">Dashboard</a><a href="/admin/programs">Programmes</a><a href="/admin/applications">Applications</a><a href="/admin/settings">Settings</a><a href="/admin/logout">Logout</a></nav></div>
-<div class="container"><div class="card"><h2>Change Password</h2>
-<% if(message) { %><p class="message"><%= message %></p><% } %>
-<% if(error) { %><p class="error"><%= error %></p><% } %>
-<form method="POST" action="/admin/settings">
-<label>Current Password</label><input type="password" name="oldpass" required>
-<label>New Password</label><input type="password" name="newpass1" required>
-<label>Confirm New Password</label><input type="password" name="newpass2" required>
-<button type="submit">Update Password</button></form></div></div>
-<footer style="background:#0b5e2f;color:white;padding:15px;text-align:center;margin-top:30px;">&copy; 2026 Admin Panel</footer>
-</body></html>
+<%- include('partials/admin_header') %>
+<h2 class="text-green-dark mb-4">College Settings</h2>
+<% if (typeof success !== 'undefined' && success) { %><div class="alert alert-success"><%= success %></div><% } %>
+<% if (typeof error !== 'undefined' && error) { %><div class="alert alert-danger"><%= error %></div><% } %>
+<div class="row">
+  <div class="col-12 col-lg-6">
+    <form method="POST" action="/admin/settings" enctype="multipart/form-data" class="mb-4">
+      <div class="mb-3"><label>College Name</label><input name="collegeName" class="form-control" value="<%= settings.collegeName %>" required></div>
+      <div class="mb-3"><label>Motto</label><input name="motto" class="form-control" value="<%= settings.motto %>"></div>
+      <div class="mb-3"><label>Vision Statement</label><textarea name="vision" class="form-control" rows="3"><%= settings.vision %></textarea></div>
+      <hr>
+      <div class="mb-3"><label>Email</label><input name="email" class="form-control" value="<%= settings.email %>" required></div>
+      <div class="mb-3"><label>Phone</label><input name="phone" class="form-control" value="<%= settings.phone %>"></div>
+      <div class="mb-3"><label>Address</label><input name="address" class="form-control" value="<%= settings.address %>"></div>
+
+      <h5 class="mt-4">Document Formats</h5>
+      <div class="mb-3">
+        <label>Allowed Upload Formats</label>
+        <input name="allowedUploadFormats" class="form-control" value="<%= settings.allowedUploadFormats %>" placeholder=".pdf,.jpg,.jpeg,.png">
+        <small class="text-muted">Comma-separated extensions, e.g. .pdf,.jpg,.png</small>
+      </div>
+      <div class="mb-3">
+        <label>Allowed Download Formats</label>
+        <input name="allowedDownloadFormats" class="form-control" value="<%= settings.allowedDownloadFormats %>" placeholder=".pdf,.jpg,.jpeg,.png">
+        <small class="text-muted">Files with these extensions can be downloaded.</small>
+      </div>
+
+      <h5 class="mt-4">Images</h5>
+      <!-- Logo -->
+      <div class="mb-3">
+        <label>Logo</label>
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <% if (settings.logo) { %>
+            <img src="<%= settings.logo %>" style="max-height:40px;">
+            <a href="/admin/settings/delete-image?field=logo" class="btn btn-sm p-0 text-danger" title="Delete logo" onclick="return confirm('Delete logo?');"><i class="fas fa-trash"></i></a>
+          <% } else { %><span class="text-muted small">Not set</span><% } %>
+        </div>
+        <input type="file" name="logo" class="form-control" accept="image/*">
+      </div>
+      <!-- Header Background -->
+      <div class="mb-3">
+        <label>Header Background</label>
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <% if (settings.headerBg) { %>
+            <img src="<%= settings.headerBg %>" style="max-height:40px;">
+            <a href="/admin/settings/delete-image?field=headerBg" class="btn btn-sm p-0 text-danger" title="Delete" onclick="return confirm('Delete header background?');"><i class="fas fa-trash"></i></a>
+          <% } else { %><span class="text-muted small">Not set</span><% } %>
+        </div>
+        <input type="file" name="headerBg" class="form-control" accept="image/*">
+      </div>
+      <!-- Hero Background -->
+      <div class="mb-3">
+        <label>Hero Background</label>
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <% if (settings.heroBg) { %>
+            <img src="<%= settings.heroBg %>" style="max-height:40px;">
+            <a href="/admin/settings/delete-image?field=heroBg" class="btn btn-sm p-0 text-danger" title="Delete" onclick="return confirm('Delete hero background?');"><i class="fas fa-trash"></i></a>
+          <% } else { %><span class="text-muted small">Not set</span><% } %>
+        </div>
+        <input type="file" name="heroBg" class="form-control" accept="image/*">
+      </div>
+      <hr>
+      <h6>Trust Badges</h6>
+      <% var bad = ['trustBadge1','trustBadge2','trustBadge3','trustBadge4']; %>
+      <div class="row g-2">
+        <% bad.forEach(function(b, i) { %>
+          <div class="col-6">
+            <label>Badge <%= i+1 %></label>
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <% if (settings[b]) { %>
+                <img src="<%= settings[b] %>" style="max-height:30px;">
+                <a href="/admin/settings/delete-image?field=<%= b %>" class="btn btn-sm p-0 text-danger" title="Delete" onclick="return confirm('Delete this badge?');"><i class="fas fa-trash"></i></a>
+              <% } else { %><span class="text-muted small">Not set</span><% } %>
+            </div>
+            <input type="file" name="<%= b %>" class="form-control" accept="image/*">
+          </div>
+        <% }) %>
+      </div>
+
+      <button type="submit" class="btn btn-gold mt-4">Save Settings</button>
+    </form>
+  </div>
+  <div class="col-12 col-lg-6">
+    <div class="card">
+      <div class="card-body">
+        <h5>Change Password</h5>
+        <form method="POST" action="/admin/settings/password">
+          <div class="mb-3"><label>New Password</label><input type="password" name="newPassword" class="form-control" required></div>
+          <button type="submit" class="btn btn-outline-dark">Update Password</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('partials/admin_footer') %>

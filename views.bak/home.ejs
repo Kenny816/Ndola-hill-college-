@@ -1,6 +1,6 @@
 <%- include('partials/header') %>
 
-<section class="hero text-md-start text-center" id="hero">
+<section class="hero text-md-start text-center fade-up" id="hero">
   <div class="container">
     <div class="row align-items-center">
       <div class="col-lg-7">
@@ -10,31 +10,39 @@
           <span class="badge bg-light text-dark p-2 me-2 mb-2"><small><i class="fas fa-certificate me-1"></i>Accredited by TEVETA</small></span>
           <span class="badge bg-light text-dark p-2"><small><i class="fas fa-building-columns me-1"></i>Member of EIZ</small></span>
         </div>
+        <!-- Quick Programme Finder -->
+        <div class="mt-4 p-3 bg-white rounded shadow-sm text-dark">
+          <label class="fw-sem">Find Your Programme</label>
+          <div class="input-group">
+            <select id="programmeSelect" class="form-select">
+              <option value="">Select a programme...</option>
+              <% programs.forEach(p => { %>
+                <option value="<%= p.id %>"><%= p.name %></option>
+              <% }) %>
+            </select>
+            <button class="btn btn-gold" onclick="location.href='/program/'+document.getElementById('programmeSelect').value"><i class="fas fa-search me-1"></i>View</button>
+          </div>
+        </div>
         <a href="/apply" class="btn btn-gold btn-lg rounded-pill mt-3 px-5"><i class="fas fa-paper-plane me-2"></i>Start Application</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Trust Badges (admin‑uploaded) -->
-<div class="bg-white py-3 border-bottom">
+<!-- Trust Band -->
+<div class="bg-white py-3 border-bottom fade-up">
   <div class="container d-flex justify-content-center align-items-center flex-wrap gap-4">
     <span class="text-muted small">Proudly recognised by:</span>
-    <% var badge1 = (typeof site !== 'undefined' && site.trustBadge1) ? site.trustBadge1 : 'https://via.placeholder.com/80x30?text=TEVETA'; %>
-    <img src="<%= badge1 %>" alt="Accreditation" class="trust-badge" height="30">
-    <% var badge2 = (typeof site !== 'undefined' && site.trustBadge2) ? site.trustBadge2 : 'https://via.placeholder.com/80x30?text=EIZ'; %>
-    <img src="<%= badge2 %>" alt="Accreditation" class="trust-badge" height="30">
-    <% var badge3 = (typeof site !== 'undefined' && site.trustBadge3) ? site.trustBadge3 : 'https://via.placeholder.com/80x30?text=MoE'; %>
-    <img src="<%= badge3 %>" alt="Accreditation" class="trust-badge" height="30">
-    <% var badge4 = (typeof site !== 'undefined' && site.trustBadge4) ? site.trustBadge4 : 'https://via.placeholder.com/80x30?text=ZCCM-IH'; %>
-    <img src="<%= badge4 %>" alt="Accreditation" class="trust-badge" height="30">
+    <img src="https://via.placeholder.com/80x30?text=TEVETA" alt="TEVETA" class="trust-badge" height="30">
+    <img src="https://via.placeholder.com/80x30?text=EIZ" alt="EIZ" class="trust-badge" height="30">
+    <img src="https://via.placeholder.com/80x30?text=MoE" alt="Ministry of Education" class="trust-badge" height="30">
+    <img src="https://via.placeholder.com/80x30?text=ZCCM-IH" alt="ZCCM-IH" class="trust-badge" height="30">
   </div>
 </div>
 
-<!-- Main Content Container -->
 <div class="container my-5">
 
-  <!-- Why Choose Us -->
+  <!-- Why Choose Us (with Font Awesome icons) -->
   <h2 class="text-center text-green-dark mb-4 fade-up">Why Choose Ndola Hill College?</h2>
   <div class="row text-center g-4 mb-5">
     <div class="col-md-4 fade-up">
@@ -60,7 +68,7 @@
     </div>
   </div>
 
-  <!-- Stats with Count-Up -->
+  <!-- Stats (already have count-up) -->
   <div class="row text-center g-4 mb-5 fade-up" id="statsContainer">
     <div class="col-sm-6 col-lg-3"><div class="bg-white p-4 rounded shadow-sm"><div class="display-5 fw-bold text-green-dark"><span class="count-up" data-target="2500">0</span>+</div><p>Graduates</p></div></div>
     <div class="col-sm-6 col-lg-3"><div class="bg-white p-4 rounded shadow-sm"><div class="display-5 fw-bold text-green-dark"><span class="count-up" data-target="87">0</span>%</div><p>Employment Rate</p></div></div>
@@ -72,12 +80,20 @@
   <h2 class="text-center text-green-dark mb-4 fade-up">Popular Programmes</h2>
   <div class="row g-4 mb-5 fade-up" id="popularProgrammes"></div>
 
-  <!-- Testimonials Carousel -->
+  <!-- Industry Partners -->
+  <h2 class="text-center text-green-dark mb-4 fade-up">Our Industry Partners</h2>
+  <div class="d-flex flex-wrap justify-content-center gap-4 mb-5 fade-up">
+    <% partners.forEach(partner => { %>
+      <div class="partner-logo"><img src="<%= partner.logo %>" alt="<%= partner.name %>" loading="lazy" style="max-width:120px; height:auto;"></div>
+    <% }) %>
+  </div>
+
+  <!-- Testimonials Carousel (custom) -->
   <h2 class="text-center text-green-dark mb-4 fade-up">What Our Graduates Say</h2>
   <div class="carousel-container mb-5 position-relative fade-up" id="customCarousel">
     <div class="carousel-track d-flex overflow-hidden" id="carouselTrack"></div>
-    <button class="carousel-prev position-absolute top-50 start-0 translate-middle-y btn btn-outline-dark btn-sm rounded-circle ms-2">&lsaquo;</button>
-    <button class="carousel-next position-absolute top-50 end-0 translate-middle-y btn btn-outline-dark btn-sm rounded-circle me-2">&rsaquo;</button>
+    <button class="carousel-prev position-absolute top-50 start-0 translate-middle-y btn btn-outline-dark btn-sm rounded-circle ms-2">‹</button>
+    <button class="carousel-next position-absolute top-50 end-0 translate-middle-y btn btn-outline-dark btn-sm rounded-circle me-2">›</button>
     <div class="d-flex justify-content-center mt-2" id="carouselIndicators"></div>
   </div>
 
@@ -89,7 +105,6 @@
   </div>
 </div>
 
-<!-- Sticky mobile apply -->
 <a href="/apply" class="sticky-apply text-decoration-none"><i class="fas fa-pen-to-square me-1"></i> Apply Now – September 2026 Intake</a>
 
 <%- include('partials/footer') %>

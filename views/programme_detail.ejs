@@ -1,73 +1,134 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= program.name %> – Ndola Hill College</title>
-  <style>
-    :root { --green-dark: #0b5e2f; --gold: #d4a017; }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f4f6f8; color: #333; }
-    .top-bar { background: var(--green-dark); color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; position: relative; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
-    .logo h1 { font-size: 1.5rem; }
-    .logo .tagline { font-size: 0.8rem; opacity: 0.9; }
-    .nav a { color: white; margin: 0 10px; text-decoration: none; font-weight: 500; }
-    .nav a:hover, .nav a.active { border-bottom: 2px solid var(--gold); }
-    .hamburger { display: none; flex-direction: column; cursor: pointer; }
-    .hamburger span { width: 25px; height: 3px; background: white; margin: 2px 0; }
-    #menu-toggle { display: none; }
-    .mobile-menu { display: none; background: var(--green-dark); position: absolute; top: 60px; left: 0; width: 100%; z-index: 100; flex-direction: column; }
-    .mobile-menu a { color: white; padding: 12px 20px; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
-    .detail-card { background: white; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); padding: 30px; }
-    .detail-card h2 { color: var(--green-dark); margin-bottom: 20px; }
-    .meta { display: flex; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
-    .meta-item { background: #e8f5e9; padding: 10px 15px; border-radius: 8px; }
-    .description { line-height: 1.8; margin-bottom: 30px; }
-    .cta-btn { display: inline-block; background: var(--gold); color: #000; padding: 15px 30px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 1.1rem; }
-    .back-link { color: var(--green-dark); text-decoration: underline; margin-top: 20px; display: inline-block; }
-    @media (max-width: 768px) {
-      .nav { display: none; }
-      .hamburger { display: flex; }
-      #menu-toggle:checked ~ .mobile-menu { display: flex; }
+<%- include('partials/header') %>
+
+<% if (program) { %>
+<style>
+  /* Timeline responsiveness */
+  .timeline-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
+  .timeline-step {
+    flex: 1 1 100px; min-width: 80px; text-align: center; position: relative;
+  }
+  .timeline-step:not(:last-child)::after {
+    content: '';
+    position: absolute; top: 25px; right: -50%; width: 100%; height: 2px;
+    background: var(--green-dark); z-index: 0;
+  }
+  @media (max-width: 768px) {
+    .timeline-row { flex-direction: column; gap: 1.5rem; }
+    .timeline-step:not(:last-child)::after {
+      top: auto; bottom: -1rem; left: 50%; width: 2px; height: 1.5rem;
+      right: auto;
     }
-    footer a:hover { text-decoration: underline; }
-  </style>
-</head>
-<body>
-<div class="top-bar">
-  <div class="logo">
-    <h1>Ndola Hill College</h1>
-    <div class="tagline">"Developing Skills, Building Futures"</div>
+    .timeline-step { flex: none; }
+  }
+  .step-circle {
+    width: 50px; height: 50px; border-radius: 50%; background: var(--green-dark);
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 0.5rem; font-size: 1.3rem; font-weight: bold; position: relative; z-index: 1;
+  }
+  .sticky-apply { display: none; }
+  @media (max-width: 768px) {
+    .sticky-apply {
+      display: block; position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--green-dark); padding: 12px; z-index: 999;
+      color: white; text-align: center; font-weight: bold; text-decoration: none;
+    }
+  }
+</style>
+
+<section class="bg-green-dark text-white py-4 py-md-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <h1 class="display-5 fw-bold fs-3 fs-md-1"><%= program.name %></h1>
+        <span class="badge bg-gold text-dark px-3 py-2">
+          <%= program.type %>
+        </span>
+      </div>
+      <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <a href="/apply" class="btn btn-light rounded-pill text-green-dark fw-bold">
+          Apply Now
+        </a>
+      </div>
+    </div>
   </div>
-  <label class="hamburger" for="menu-toggle"><span></span><span></span><span></span></label>
-  <div class="nav">
-    <a href="/">Home</a>
-    <a href="/programmes">Programmes</a>
-    <a href="/apply">Apply Now</a>
-    <a href="/about">About</a>
-    <a href="/contact">Contact</a>
+</section>
+
+<div class="container my-4 my-md-5">
+  <div class="row">
+    <div class="col-12">
+      <!-- Requirements Card -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-3 p-md-4">
+          <h2 class="text-green-dark h4 mb-3">Admission Requirements</h2>
+          <div class="row">
+            <div class="col-md-6 mb-3 mb-md-0">
+              <h5 class="h6">Application Fee</h5>
+              <p class="fs-5">ZMW <%= program.applicationFee %></p>
+            </div>
+            <div class="col-md-6">
+              <h5 class="h6">Entry Qualifications</h5>
+              <p><%= program.entryRequirements %></p>
+            </div>
+          </div>
+          <hr>
+          <p class="text-muted small mb-0">
+            Full programme curriculum, duration, tuition fees, and other details are provided only to accepted candidates.
+          </p>
+        </div>
+      </div>
+
+      <!-- Application Process -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-3 p-md-4">
+          <h2 class="text-green-dark h4 mb-4">Application Process</h2>
+          <div class="timeline-row">
+            <div class="timeline-step">
+              <div class="step-circle">1</div>
+              <strong>Apply</strong>
+              <p class="small text-muted d-none d-md-block">Submit your application online.</p>
+            </div>
+            <div class="timeline-step">
+              <div class="step-circle">2</div>
+              <strong>Review</strong>
+              <p class="small text-muted d-none d-md-block">Our team reviews your qualifications.</p>
+            </div>
+            <div class="timeline-step">
+              <div class="step-circle">3</div>
+              <strong>Interview</strong>
+              <p class="small text-muted d-none d-md-block">Shortlisted candidates may be interviewed.</p>
+            </div>
+            <div class="timeline-step">
+              <div class="step-circle">4</div>
+              <strong>Acceptance</strong>
+              <p class="small text-muted d-none d-md-block">Receive your acceptance letter.</p>
+            </div>
+            <div class="timeline-step">
+              <div class="step-circle">5</div>
+              <strong>Full Details</strong>
+              <p class="small text-muted d-none d-md-block">Access complete programme info.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <a href="/apply" class="btn btn-gold btn-lg px-5">Apply Now</a>
+      </div>
+    </div>
   </div>
-</div>
-<input type="checkbox" id="menu-toggle">
-<div class="mobile-menu">
-  <a href="/">Home</a><a href="/programmes">Programmes</a><a href="/apply">Apply Now</a><a href="/about">About</a><a href="/contact">Contact</a>
 </div>
 
-<div class="container">
-  <div class="detail-card">
-    <h2><%= program.name %></h2>
-    <div class="meta">
-      <div class="meta-item"><strong>Capacity:</strong> <%= program.capacity %> students</div>
-      <div class="meta-item"><strong>Fee:</strong> <%= program.fee || 'Contact us' %></div>
-    </div>
-    <div class="description">
-      <p><%= program.description || 'Detailed description coming soon.' %></p>
-    </div>
-    <a href="/apply" class="cta-btn">Apply for this programme</a>
-    <br><a href="/programmes" class="back-link">← Back to all programmes</a>
-  </div>
-</div>
+<!-- Sticky mobile apply -->
+<a href="/apply" class="sticky-apply">Apply Now</a>
 
-${FOOTER_HTML}
-</body>
-</html>
+<% } else { %>
+<section class="bg-light py-5 text-center">
+  <div class="container">
+    <h1 class="text-danger">Programme Not Found</h1>
+    <p class="lead">The programme you are looking for does not exist.</p>
+    <a href="/programmes" class="btn btn-gold">Browse All Programmes</a>
+  </div>
+</section>
+<% } %>
+
+<%- include('partials/footer') %>

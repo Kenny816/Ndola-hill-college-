@@ -1,88 +1,210 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apply Now – Ndola Hill College</title>
-  <style>
-    :root { --green-dark: #0b5e2f; --gold: #d4a017; }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f4f6f8; color: #333; }
-    .top-bar { background: var(--green-dark); color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; position: relative; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
-    .logo h1 { font-size: 1.5rem; }
-    .logo .tagline { font-size: 0.8rem; opacity: 0.9; }
-    .nav a { color: white; margin: 0 10px; text-decoration: none; font-weight: 500; }
-    .nav a:hover, .nav a.active { border-bottom: 2px solid var(--gold); }
-    .hamburger { display: none; flex-direction: column; cursor: pointer; }
-    .hamburger span { width: 25px; height: 3px; background: white; margin: 2px 0; }
-    #menu-toggle { display: none; }
-    .mobile-menu { display: none; background: var(--green-dark); position: absolute; top: 60px; left: 0; width: 100%; z-index: 100; flex-direction: column; }
-    .mobile-menu a { color: white; padding: 12px 20px; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .container { max-width: 700px; margin: 30px auto; padding: 0 20px; }
-    .form-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
-    label { display: block; margin-bottom: 5px; font-weight: 600; }
-    input, select { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 6px; }
-    button { background: var(--green-dark); color: white; padding: 12px; border: none; border-radius: 6px; width: 100%; font-size: 1.1rem; cursor: pointer; font-weight: 600; }
-    .upload-group { display: none; }
-    .success { background: #d4edda; color: #155724; padding: 12px; border-radius: 6px; margin-bottom: 20px; }
-    .error { background: #f8d7da; color: #721c24; padding: 12px; border-radius: 6px; margin-bottom: 20px; }
-    @media (max-width: 768px) {
-      .nav { display: none; }
-      .hamburger { display: flex; }
-      #menu-toggle:checked ~ .mobile-menu { display: flex; }
-    }
-    footer a:hover { text-decoration: underline; }
-  </style>
-</head>
-<body>
-<div class="top-bar">
-  <div class="logo"><h1>Ndola Hill College</h1><div class="tagline">"Developing Skills, Building Futures"</div></div>
-  <label class="hamburger" for="menu-toggle"><span></span><span></span><span></span></label>
-  <div class="nav">
-    <a href="/">Home</a><a href="/programmes">Programmes</a><a href="/apply" class="active">Apply Now</a><a href="/about">About</a><a href="/contact">Contact</a>
-  </div>
-</div>
-<input type="checkbox" id="menu-toggle"><div class="mobile-menu"><a href="/">Home</a><a href="/programmes">Programmes</a><a href="/apply">Apply Now</a><a href="/about">About</a><a href="/contact">Contact</a></div>
+<%- include('partials/header') %>
 
-<div class="container">
-  <h1>Application Form</h1>
-  <% if (success) { %><div class="success"><%= success %></div><% } %>
-  <% if (error) { %><div class="error"><%= error %></div><% } %>
-  <div class="form-card">
-    <form method="POST" action="/apply" enctype="multipart/form-data">
-      <label>Full Name *</label><input type="text" name="fullname" required>
-      <label>Email *</label><input type="email" name="email" required>
-      <label>Phone Number *</label><input type="tel" name="phone" required>
-      <label>Choose Programme *</label>
-      <select name="programme" required>
-        <option value="">-- Select Programme --</option>
-        <% programs.forEach(p => { %><option value="<%= p.id %>"><%= p.name %></option><% }) %>
-      </select>
-      <label>Course Type *</label>
-      <select name="courseType" id="courseType" required onchange="toggleUploads()">
-        <option value="">-- Select Type --</option>
-        <option value="short">Short Course</option>
-        <option value="long">Long-Term Programme</option>
-        <option value="alevel">A-Levels</option>
-      </select>
-      <div id="nrcNumberGroup"><label>NRC Number *</label><input type="text" name="nrcNumber" placeholder="e.g., 123456/78/9" required></div>
-      <div id="grade12Group" class="upload-group"><label>Grade 12 Certificate (scan/photo) *</label><input type="file" name="grade12File" accept=".pdf,.jpg,.jpeg,.png"><p class="file-note">PDF or image (max 5MB)</p></div>
-      <div id="nrcUploadGroup" class="upload-group"><label>NRC Copy (scan/photo) *</label><input type="file" name="nrcFile" accept=".pdf,.jpg,.jpeg,.png"><p class="file-note">PDF or image (max 5MB)</p></div>
-      <button type="submit">Submit Application</button>
-    </form>
-  </div>
-</div>
-
-<script>
-  function toggleUploads() {
-    const type = document.getElementById('courseType').value;
-    const short = (type === 'short');
-    document.getElementById('grade12Group').style.display = short ? 'none' : 'block';
-    document.getElementById('nrcUploadGroup').style.display = short ? 'none' : 'block';
-    const nrcInput = document.getElementById('nrcNumberGroup').querySelector('input');
-    nrcInput.required = short;
+<style>
+  :root { --green-dark: #0b5e2f; --gold: #d4a017; }
+  .apply-wrapper { max-width: 960px; margin: 0 auto; }
+  .section-card {
+    background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    padding: 2rem; margin-bottom: 1.5rem;
   }
-</script>
+  .section-card h4 {
+    color: var(--green-dark); font-weight: 700; margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 0.5rem; font-size: 1.2rem;
+  }
+  .section-card h4 i { font-size: 1.3rem; color: var(--gold); }
+  .form-control, .form-select {
+    border-radius: 8px; padding: 0.7rem 1rem; border: 1px solid #ddd;
+  }
+  .form-control:focus, .form-select:focus {
+    border-color: var(--green-dark); box-shadow: 0 0 0 0.2rem rgba(11,94,47,0.15);
+  }
+  .btn-submit {
+    background-color: var(--gold); color: #000; font-weight: 700;
+    padding: 0.8rem 2rem; border: none; border-radius: 8px; font-size: 1.1rem;
+    transition: background 0.3s;
+  }
+  .btn-submit:hover { background-color: #c48f14; }
+  .file-upload-box {
+    border: 2px dashed #ccc; border-radius: 8px; padding: 1.2rem;
+    text-align: center; transition: 0.2s; background: #fafafa;
+  }
+  .file-upload-box:hover { border-color: var(--green-dark); background: #f9fbfa; }
+  .file-upload-box input[type="file"] { display: block; margin: 0 auto; }
+  .progress-track {
+    display: flex; justify-content: space-between; margin-bottom: 2rem;
+    position: relative; padding: 0;
+  }
+  .progress-track::before {
+    content: ''; position: absolute; top: 18px; left: 8%; right: 8%;
+    height: 2px; background: #ddd; z-index: 0;
+  }
+  .step-item {
+    display: flex; flex-direction: column; align-items: center;
+    flex: 1; position: relative; z-index: 1;
+  }
+  .step-circle {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: #ddd; color: #666; display: flex;
+    align-items: center; justify-content: center; font-weight: 700;
+    font-size: 1rem; margin-bottom: 0.3rem;
+  }
+  .step-item.active .step-circle { background: var(--green-dark); color: #fff; }
+  .step-label { font-size: 0.7rem; text-transform: uppercase; color: #888; font-weight: 600; }
+  .step-item.active .step-label { color: var(--green-dark); }
+  @media (max-width: 576px) {
+    .section-card { padding: 1.2rem; }
+    .step-circle { width: 28px; height: 28px; font-size: 0.8rem; }
+    .step-label { font-size: 0.6rem; }
+  }
+</style>
 
-${FOOTER_HTML}
-</body>
-</html>
+<div class="container apply-wrapper my-5">
+  <!-- Progress Indicator -->
+  <div class="progress-track">
+    <div class="step-item active"><div class="step-circle">1</div><span class="step-label">Personal</span></div>
+    <div class="step-item"><div class="step-circle">2</div><span class="step-label">Contact</span></div>
+    <div class="step-item"><div class="step-circle">3</div><span class="step-label">Education</span></div>
+    <div class="step-item"><div class="step-circle">4</div><span class="step-label">Programme</span></div>
+    <div class="step-item"><div class="step-circle">5</div><span class="step-label">Documents</span></div>
+  </div>
+
+  <form action="/apply" method="POST" enctype="multipart/form-data">
+    <!-- Personal Information -->
+    <div class="section-card">
+      <h4><i class="fas fa-user-circle"></i> Personal Information</h4>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Full Name *</label>
+          <input type="text" name="fullName" class="form-control" placeholder="Enter your full legal name" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">NRC Number *</label>
+          <input type="text" name="nrc" class="form-control" placeholder="e.g. 123456/78/1" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Date of Birth *</label>
+          <input type="date" name="dob" class="form-control" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Gender *</label>
+          <select name="gender" class="form-select" required>
+            <option value="" disabled selected>Select gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Nationality</label>
+          <input type="text" name="nationality" class="form-control" placeholder="Zambian">
+        </div>
+        <div class="col-12">
+          <label class="form-label">Residential Address</label>
+          <input type="text" name="address" class="form-control" placeholder="Plot number, street, town">
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Details -->
+    <div class="section-card">
+      <h4><i class="fas fa-address-book"></i> Contact Details</h4>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Phone Number *</label>
+          <input type="tel" name="phone" class="form-control" placeholder="+260 97 1234567" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Email Address</label>
+          <input type="email" name="email" class="form-control" placeholder="your@email.com">
+        </div>
+      </div>
+    </div>
+
+    <!-- Educational Background -->
+    <div class="section-card">
+      <h4><i class="fas fa-school"></i> Educational Background</h4>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Previous School</label>
+          <input type="text" name="school" class="form-control" placeholder="Name of last school attended">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Year Completed</label>
+          <input type="text" name="yearCompleted" class="form-control" placeholder="e.g. 2025">
+        </div>
+      </div>
+    </div>
+
+    <!-- Programme Choice -->
+    <div class="section-card">
+      <h4><i class="fas fa-graduation-cap"></i> Programme Choice</h4>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Select Programme *</label>
+          <select name="program" class="form-select" required>
+            <option value="" disabled selected>Choose a programme</option>
+            <% programs.forEach(p => { %>
+              <option value="<%= p.name %>"><%= p.name %> (<%= p.type %>)</option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Entry Year</label>
+          <select name="year" class="form-select">
+            <option>2026</option>
+            <option>2027</option>
+          </select>
+        </div>
+        <div class="col-12">
+          <label class="form-label">Why do you want to join this programme? (Optional)</label>
+          <textarea name="motivation" class="form-control" rows="3" placeholder="A brief statement..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Required Documents -->
+    <div class="section-card">
+      <h4><i class="fas fa-cloud-upload-alt"></i> Required Documents</h4>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Grade 12 Results *</label>
+          <div class="file-upload-box">
+            <i class="fas fa-file-alt mb-2 text-muted" style="font-size:1.5rem;"></i>
+            <input type="file" name="grade12" class="form-control" required>
+            <small class="text-muted d-block mt-1">PDF, JPG or PNG</small>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">NRC Copy *</label>
+          <div class="file-upload-box">
+            <i class="fas fa-id-card mb-2 text-muted" style="font-size:1.5rem;"></i>
+            <input type="file" name="nrc_copy" class="form-control" required>
+            <small class="text-muted d-block mt-1">PDF, JPG or PNG</small>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Passport Photo</label>
+          <div class="file-upload-box">
+            <i class="fas fa-camera mb-2 text-muted" style="font-size:1.5rem;"></i>
+            <input type="file" name="photo" class="form-control">
+            <small class="text-muted d-block mt-1">Passport size</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Declaration & Submit -->
+    <div class="section-card text-center">
+      <div class="form-check d-inline-block text-start mb-3">
+        <input class="form-check-input" type="checkbox" id="declaration" required>
+        <label class="form-check-label" for="declaration">
+          I declare that all information provided is true and complete. *
+        </label>
+      </div>
+      <button type="submit" class="btn btn-submit w-100">
+        <i class="fas fa-paper-plane me-2"></i> Submit Application
+      </button>
+    </div>
+  </form>
+</div>
+
+<%- include('partials/footer') %>

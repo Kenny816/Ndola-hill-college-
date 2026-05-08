@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Acceptance Letter - <%= application.fullName %></title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { padding: 0; }
+      .letter-box { max-width: 100%; padding: 1.5rem;  box-shadow: none !important; border: none !important; }
+    }
+    .letter-box { max-width: 100%; padding: 1.5rem;  max-width: 800px; margin: 2rem auto; background: #fff; padding: 3rem; box-shadow: 0 0 20px rgba(0,0,0,0.1); border: 1px solid #dee2e6; }
+    .letter-header { text-align: center; margin-bottom: 2rem; }
+    .letter-header img { max-height: 80px; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+<div class="letter-box">
+  <div class="letter-header">
+    <% if (college.logo) { %><img src="<%= college.logo %>" class="img-fluid" alt="Logo"><% } %>
+    <h2><%= college.name %></h2>
+    <p><%= college.address %></p>
+  </div>
+  <hr>
+  <p><strong>Date:</strong> <%= new Date().toLocaleDateString('en-ZM', { year: 'numeric', month: 'long', day: 'numeric' }) %></p>
+  <p><strong>To:</strong> <%= application.fullName %></p>
+  <p><strong>NRC:</strong> <%= application.nrc %></p>
+  <br>
+  <h4 class="text-success">Acceptance Letter</h4>
+  <p>Dear <%= application.fullName %>,</p>
+  <p>We are pleased to inform you that you have been accepted into the <strong><%= application.program %></strong> programme at <strong><%= college.name %></strong> for the <strong><%= application.year %></strong> academic year.</p>
+  <p>Your application demonstrated the qualifications and drive that we seek in our students, and we believe you will succeed here.</p>
+  <p>Full programme details, including tuition fees, start dates, and orientation information, will be provided upon confirmation of your place. Please contact our admissions office if you have any questions.</p>
+  <p>We look forward to welcoming you to <%= college.name %>.</p>
+  <br>
+  <p>Sincerely,</p>
+  <p><strong>Admissions Office</strong><br><%= college.name %><br><%= college.email %></p>
+  <hr>
+  <div class="text-center no-print mt-4">
+    <button onclick="window.print()" class="btn btn-gold"><i class="fas fa-print me-1"></i>Print / Save as PDF</button>
+  </div>
+</div>
+</body>
+</html>

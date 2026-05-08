@@ -1,0 +1,86 @@
+<%- include('partials/admin_header') %>
+<h2 class="text-green-dark mb-4"><i class="fas fa-user-graduate me-2"></i>Students</h2>
+<p class="text-muted">Accepted applicants are listed here.</p>
+<div class="row g-4">
+  <% if (students.length === 0) { %><div class="col-12"><p class="text-muted">No students yet.</p></div><% } %>
+  <% students.forEach(function(student, idx) { %>
+    <div class="col-xl-4 col-lg-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body d-flex flex-column">
+          <h5 class="fw-bold"><%= student.fullName %></h5>
+          <p class="mb-1"><i class="fas fa-graduation-cap me-1 text-muted"></i><%= student.program %></p>
+          <p class="mb-1 small"><i class="fas fa-phone-alt me-1 text-muted"></i><%= student.phone %></p>
+          <p class="mb-0 small"><i class="fas fa-calendar-alt me-1 text-muted"></i>Accepted: <%= student.date %></p>
+          <% if (student.notified) { %>
+            <span class="badge bg-info mt-1"><i class="fas fa-envelope me-1"></i>Notified</span>
+          <% } %>
+          <div class="mt-auto d-flex gap-2 flex-wrap mt-2">
+            <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#studentModal<%= idx %>">
+              <i class="fas fa-eye me-1"></i>View Details
+            </button>
+            <form method="POST" action="/admin/students/notify/<%= student.id %>" class="d-inline">
+              <button type="submit" class="btn btn-outline-success btn-sm">
+                <i class="fas fa-envelope me-1"></i>Notify
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div class="modal fade" id="studentModal<%= idx %>" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-green-dark text-white">
+            <h5 class="modal-title"><%= student.fullName %></h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6">
+                <p><strong>Application ID:</strong> <%= student.id %></p>
+                <p><strong>NRC:</strong> <%= student.nrc %></p>
+                <p><strong>Phone:</strong> <%= student.phone %></p>
+                <p><strong>Email:</strong> <%= student.email %></p>
+                <p><strong>Programme:</strong> <%= student.program %></p>
+                <p><strong>Entry Year:</strong> <%= student.year %></p>
+              </div>
+              <div class="col-md-6">
+                <p><strong>Date of Birth:</strong> <%= student.dob || '—' %></p>
+                <p><strong>Gender:</strong> <%= student.gender || '—' %></p>
+                <p><strong>Address:</strong> <%= student.address || '—' %></p>
+                <p><strong>School:</strong> <%= student.school || '—' %></p>
+                <p><strong>Year Completed:</strong> <%= student.yearCompleted || '—' %></p>
+              </div>
+            </div>
+            <% if (student.motivation) { %><hr><h6>Motivation</h6><p><%= student.motivation %></p><% } %>
+            <hr>
+            <h6>Uploaded Documents</h6>
+            <% ['grade12','nrc_copy','photo'].forEach(function(doc) { %>
+              <div class="mb-2">
+                <strong><%= doc === 'grade12' ? 'Grade 12 Results' : (doc === 'nrc_copy' ? 'NRC Copy' : 'Passport Photo') %>:</strong>
+                <% if (student.documents && student.documents[doc]) { %>
+                  <a href="<%= student.documents[doc] %>" target="_blank" class="ms-2"><i class="fas fa-eye"></i> View</a>
+                  <a href="/download/<%= student.documents[doc].split('/').pop() %>" class="ms-2"><i class="fas fa-download"></i> Download</a>
+                  <form method="POST" action="/admin/documents/delete" class="d-inline ms-2" onsubmit="return confirm('Delete this file?')">
+                    <input type="hidden" name="appId" value="<%= student.id %>">
+                    <input type="hidden" name="field" value="<%= doc %>">
+                    <input type="hidden" name="filename" value="<%= student.documents[doc].split('/').pop() %>">
+                    <button type="submit" class="btn btn-sm p-0 text-danger" title="Delete file"><i class="fas fa-trash-alt"></i></button>
+                  </form>
+                <% } else { %><span class="text-muted ms-2">Not uploaded</span><% } %>
+              </div>
+            <% }) %>
+          </div>
+          <div class="modal-footer">
+            <form method="POST" action="/admin/students/notify/<%= student.id %>">
+              <button type="submit" class="btn btn-success"><i class="fas fa-envelope me-1"></i>Send Acceptance Letter</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+</div>
+<%- include('partials/admin_footer') %>

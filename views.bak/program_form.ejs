@@ -1,0 +1,37 @@
+<%- include('partials/header') %>
+<div class="container my-5">
+  <h1 class="text-green-dark mb-4"><%= program ? 'Edit' : 'Add' %> Programme</h1>
+  <form method="POST" action="/admin/programs/save">
+    <input type="hidden" name="id" value="<%= program ? program.id : '' %>">
+    <div class="row mb-3">
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Programme Name</label>
+        <input name="name" class="form-control" value="<%= program ? program.name : '' %>" required>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Type (Degree/Diploma/Certificate)</label>
+        <input name="type" class="form-control" value="<%= program ? program.type : '' %>" required>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4 mb-3">
+        <label class="form-label">Duration</label>
+        <input name="duration" class="form-control" value="<%= program ? program.duration : '' %>" required>
+      </div>
+      <div class="col-md-4 mb-3">
+        <label class="form-label">Annual Fee (ZMW)</label>
+        <input name="fee" type="number" class="form-control" value="<%= program ? program.fee : '' %>" required>
+      </div>
+      <div class="col-md-4 mb-3">
+        <label class="form-label">Capacity</label>
+        <input name="capacity" type="number" class="form-control" value="<%= program ? program.capacity : '' %>" required>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <textarea name="description" class="form-control" rows="4"><%= program ? program.description : '' %></textarea>
+    </div>
+    <button type="submit" class="btn btn-gold">Save Programme</button>
+  </form>
+</div>
+<%- include('partials/footer') %>

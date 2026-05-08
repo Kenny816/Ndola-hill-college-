@@ -1,0 +1,20 @@
+<%- include('partials/header') %>
+<div class="container my-4">
+  <h1 class="text-green-dark mb-4">Manage Programmes</h1>
+  <a href="/admin/programs/add" class="btn btn-gold mb-3">Add New Programme</a>
+  <div class="row g-4">
+    <% programs.forEach(function(p){ %>
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title"><%= p.name %></h5>
+            <p><%= p.type %> | Duration: <%= p.duration %></p>
+            <p>Fee: ZMW <%= p.fee %> | Capacity: <%= p.capacity %></p>
+            <a href="/admin/programs/edit/<%= p.id %>" class="btn btn-sm btn-outline-secondary">Edit</a>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</div>
+<%- include('partials/footer') %>

@@ -1,44 +1,25 @@
 [
   {
-    "id": "A001",
-    "student": "Benson Sendwe",
-    "progId": "P001",
-    "status": "PENDING",
-    "quals": "Grade 12 with 5 credits including English & Mathematics"
-  },
-  {
-    "id": "A002",
-    "student": "Moffat Zimba",
-    "progId": "P001",
-    "status": "PENDING",
-    "quals": "Grade 12 with 6 credits, distinction in Science"
-  },
-  {
-    "id": "A003",
-    "student": "Doreen Zimba",
-    "progId": "P003",
-    "status": "PENDING",
-    "quals": "Grade 12 with 3 credits, certificate in Environmental Studies"
-  },
-  {
-    "id": "A004",
-    "student": "Kapijimpanga",
-    "progId": "P005",
-    "status": "PENDING",
-    "quals": "Grade 12 with 4 credits, diploma in Electrical Installation"
-  },
-  {
-    "id": "A005",
-    "student": "Bdhd",
-    "email": "sgdbbdbd@gmail.com",
-    "phone": "0974571833",
-    "progId": "P002",
-    "courseType": "alevel",
-    "nrc": "12344",
-    "status": "PENDING",
-    "quals": "alevel application\nNRC: 12344",
-    "grade12File": null,
-    "nrcFile": null,
-    "appliedAt": "2026-04-28T11:38:05.117Z"
+    "id": "APP006",
+    "fullName": "kenny bwanali",
+    "nrc": "401895/16/1",
+    "phone": "+260974571833",
+    "email": "kennybwanali10@gmail.com",
+    "program": "BSc Mining Engineering",
+    "year": "2026",
+    "status": "Approved",
+    "date": "2026-05-08",
+    "dob": "2026-05-08",
+    "gender": "Female",
+    "nationality": "Zambian",
+    "address": "b58 railways newchilwa",
+    "school": "Mwashi basic school ",
+    "yearCompleted": "2023",
+    "motivation": "",
+    "documents": {
+      "grade12": "/uploads/1778256997749-Screenshot_20260507-173346.jpg",
+      "nrc_copy": "/uploads/1778256997779-Screenshot_20260506-064728.jpg",
+      "photo": "/uploads/1778256997804-Screenshot_20260506-064728.jpg"
+    }
   }
 ]

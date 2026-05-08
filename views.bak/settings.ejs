@@ -1,0 +1,18 @@
+<%- include('partials/header') %>
+<div class="container my-5">
+  <h1 class="text-green-dark mb-4">Settings</h1>
+  <div class="card shadow-sm p-4">
+    <form method="POST" action="/admin/settings">
+      <div class="mb-3">
+        <label class="form-label">College Name</label>
+        <input name="collegeName" class="form-control" value="<%= settings.collegeName %>">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Contact Email</label>
+        <input name="email" class="form-control" value="<%= settings.email %>">
+      </div>
+      <button type="submit" class="btn btn-gold">Save Settings</button>
+    </form>
+  </div>
+</div>
+<%- include('partials/footer') %>

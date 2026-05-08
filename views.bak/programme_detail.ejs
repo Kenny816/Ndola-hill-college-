@@ -1,0 +1,134 @@
+<%- include('partials/header') %>
+
+<% if (program) { %>
+<!-- Additional styles for this page only -->
+<style>
+  /* Print styles: hide everything except main content */
+  @media print {
+    body * { visibility: hidden; }
+    .print-area, .print-area * { visibility: visible; }
+    .print-area { position: absolute; left: 0; top: 0; width: 100%; }
+    .no-print { display: none !important; }
+    .hero-section { display: none !important; }
+  }
+  /* Mobile sticky apply (same as landing) */
+  .sticky-apply { display: none; }
+  @media (max-width: 768px) {
+    .sticky-apply {
+      display: block; position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--green-dark); padding: 12px; z-index: 999;
+      color: white; text-align: center; font-weight: bold;
+    }
+  }
+  /* Timeline */
+  .timeline-step { flex: 1; text-align: center; position: relative; }
+  .timeline-step:not(:last-child)::after {
+    content: '';
+    position: absolute; top: 24px; right: -50%; width: 100%; height: 2px;
+    background: var(--green-dark); z-index: 0;
+  }
+  .step-icon {
+    background: var(--green-dark); color: #fff; width: 50px; height: 50px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; margin: 0 auto 0.5rem; position: relative; z-index: 1;
+  }
+</style>
+
+<section class="hero-section bg-green-dark text-white py-5 no-print">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <h1 class="display-5 fw-bold"><%= program.name %></h1>
+        <span class="badge bg-gold text-dark px-3 py-2 fs-6"><i class="fas <% if (program.type==='Degree') { %>fa-graduation-cap<% } else if (program.type==='Diploma') { %>fa-scroll<% } else { %>fa-certificate<% } %> me-2"></i><%= program.type %></span>
+      </div>
+      <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <a href="/apply" class="btn btn-light btn-lg rounded-pill text-green-dark fw-bold no-print"><i class="fas fa-paper-plane me-2"></i>Apply Now</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Print-ready area -->
+<div class="container my-5 print-area">
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+          <!-- Programme name and type repeated for print clarity -->
+          <div class="d-none d-print-block mb-4">
+            <h1 class="text-green-dark"><%= program.name %></h1>
+            <span class="badge bg-green-dark"><%= program.type %></span>
+            <hr>
+          </div>
+
+          <h2 class="text-green-dark mb-4">Admission Requirements</h2>
+          <div class="mb-4">
+            <h5><i class="fas fa-file-invoice-dollar me-2"></i>Application Fee</h5>
+            <p class="lead">ZMW <%= program.applicationFee %></p>
+          </div>
+          <div class="mb-4">
+            <h5><i class="fas fa-check-circle me-2"></i>Entry Qualifications</h5>
+            <p class="lead"><%= program.entryRequirements %></p>
+          </div>
+          <hr>
+          <p class="text-muted"><i class="fas fa-lock me-2"></i>Full programme curriculum, duration, tuition fees, and other details are provided only to accepted candidates.</p>
+          <a href="/apply" class="btn btn-gold mt-2 no-print"><i class="fas fa-pen-to-square me-1"></i>Apply Now</a>
+          <!-- Download Brochure Button -->
+          <button onclick="window.print()" class="btn btn-outline-green-dark mt-2 ms-2 no-print"><i class="fas fa-download me-1"></i>Print / Download Brochure</button>
+        </div>
+      </div>
+
+      <!-- Application Process Timeline (no-print) -->
+      <div class="card shadow-sm border-0 mb-4 no-print">
+        <div class="card-body p-4">
+          <h2 class="text-green-dark mb-4">Application Process</h2>
+          <div class="d-flex flex-column flex-md-row gap-3 mt-4">
+            <div class="timeline-step">
+              <div class="step-icon">1</div>
+              <h5>Apply</h5>
+              <p class="small text-muted">Submit your application online with required documents.</p>
+            </div>
+            <div class="timeline-step">
+              <div class="step-icon">2</div>
+              <h5>Review</h5>
+              <p class="small text-muted">Our admissions team reviews your qualifications.</p>
+            </div>
+            <div class="timeline-step">
+              <div class="step-icon">3</div>
+              <h5>Interview</h5>
+              <p class="small text-muted">Shortlisted candidates may be invited for a brief interview.</p>
+            </div>
+            <div class="timeline-step">
+              <div class="step-icon">4</div>
+              <h5>Acceptance</h5>
+              <p class="small text-muted">Receive your acceptance letter and full programme details.</p>
+            </div>
+            <div class="timeline-step">
+              <div class="step-icon">5</div>
+              <h5>Full Details</h5>
+              <p class="small text-muted">Access complete curriculum, fees, and schedules.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sticky mobile apply button -->
+<a href="/apply" class="sticky-apply text-decoration-none">
+  <i class="fas fa-pen-to-square me-1"></i> Apply Now
+</a>
+
+<% } else { %>
+<section class="bg-light py-5 text-center">
+  <div class="container">
+    <i class="fas fa-exclamation-triangle fa-4x text-muted mb-3"></i>
+    <h1 class="text-danger">Programme Not Found</h1>
+    <p class="lead">The programme you are looking for does not exist.</p>
+    <a href="/programmes" class="btn btn-gold">Browse All Programmes</a>
+  </div>
+</section>
+<% } %>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,35 @@
+<%- include('partials/header') %>
+<div class="container my-4">
+  <h1 class="text-green-dark mb-4">Admin Dashboard</h1>
+  <div class="row g-4 mb-5">
+    <div class="col-md-3 col-sm-6">
+      <div class="card bg-primary text-white">
+        <div class="card-body"><h5><%= applications.length %></h5><p>Applications</p></div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+      <div class="card bg-success text-white">
+        <div class="card-body"><h5><%= programs.length %></h5><p>Programmes</p></div>
+      </div>
+    </div>
+  </div>
+  <h4>Recent Applications</h4>
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr><th>Name</th><th>NRC</th><th>Programme</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <% applications.forEach(function(app){ %>
+          <tr>
+            <td><%= app.fullName %></td>
+            <td><%= app.nrc %></td>
+            <td><%= app.program %></td>
+            <td><%= app.status %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<%- include('partials/footer') %>
