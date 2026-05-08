@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title><%= mode=='add'?'Add':'Edit' %> Programme</title>
+<style>body{margin:0;font-family:sans-serif;background:#f4f6f8}.top-bar{background:#0b5e2f;color:white;padding:12px 20px}.container{max-width:600px;margin:20px auto;padding:0 20px}.card{background:white;padding:20px;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.05)}input,textarea{width:100%;padding:8px;margin-bottom:10px;border:1px solid #ccc;border-radius:4px;box-sizing:border-box}textarea{resize:vertical;min-height:80px}button{background:#0b5e2f;color:white;padding:10px 20px;border:none;border-radius:4px;cursor:pointer}.error{color:red}a{margin-left:10px;color:#0b5e2f;text-decoration:none}</style>
+</head><body>
+<div class="top-bar"><h1>Admin</h1></div>
+<div class="container"><div class="card">
+<h2><%= mode=='add'?'Add New Programme':'Edit Programme' %></h2>
+<% if(error) { %><p class="error"><%= error %></p><% } %>
+<form method="POST" action="/admin/programs/save">
+<input type="hidden" name="mode" value="<%= mode %>">
+<% if(mode=='edit') { %><input type="hidden" name="old_id" value="<%= program.id %>"><% } %>
+<label>ID</label><input type="text" name="id" value="<%= program.id || '' %>" required>
+<label>Name</label><input type="text" name="name" value="<%= program.name || '' %>" required>
+<label>Capacity</label><input type="number" name="capacity" value="<%= program.capacity || '' %>" required>
+<label>Fee</label><input type="text" name="fee" value="<%= program.fee || '' %>" placeholder="ZMW ...">
+<label>Description</label><textarea name="description"><%= program.description || '' %></textarea>
+<button type="submit">Save</button> <a href="/admin/programs">Cancel</a>
+</form></div></div></body></html>

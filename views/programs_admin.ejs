@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Programmes Management</title>
+<style>body{margin:0;font-family:sans-serif;background:#f4f6f8}.top-bar{background:#0b5e2f;color:white;padding:12px 20px;display:flex;justify-content:space-between;align-items:center}.nav a{color:white;margin:0 10px;text-decoration:none}.container{max-width:1200px;margin:20px auto;padding:0 20px}.card{background:white;padding:20px;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.05);overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:800px}th{background:#eaeaea;padding:8px}td{padding:8px;border-bottom:1px solid #ddd}.btn{display:inline-block;padding:6px 12px;border-radius:4px;text-decoration:none;font-size:0.85rem;margin:2px}.btn-warning{background:#f39c12;color:white}.btn-danger{background:#c0392b;color:white}.btn-primary{background:#0b5e2f;color:white}</style>
+</head><body>
+<div class="top-bar"><h1>Programmes</h1><nav class="nav"><a href="/admin/dashboard">Dashboard</a><a href="/admin/programs">Programmes</a><a href="/admin/applications">Applications</a><a href="/admin/settings">Settings</a><a href="/admin/logout">Logout</a></nav></div>
+<div class="container"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px"><h2>Manage Programmes</h2><a href="/admin/programs/add" class="btn btn-primary">+ Add</a></div>
+<div class="card"><table><tr><th>ID</th><th>Name</th><th>Capacity</th><th>Fee</th><th>Description</th><th>Actions</th></tr>
+<% programs.forEach(p => { %><tr><td><%= p.id %></td><td><%= p.name %></td><td><%= p.capacity %></td><td><%= p.fee || '-' %></td><td><%= p.description ? p.description.substring(0,50)+'…' : '-' %></td>
+<td><a href="/admin/programs/edit/<%= p.id %>" class="btn btn-warning">Edit</a> <a href="/admin/programs/delete/<%= p.id %>" class="btn btn-danger" onclick="return confirm('Delete?')">Del</a></td></tr><% }) %>
+</table></div></div>
+<footer style="background:#0b5e2f;color:white;padding:15px;text-align:center;margin-top:30px;">&copy; 2026 Admin Panel</footer>
+</body></html>

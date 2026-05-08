@@ -1,0 +1,44 @@
+[
+  {
+    "id": "A001",
+    "student": "Benson Sendwe",
+    "progId": "P001",
+    "status": "PENDING",
+    "quals": "Grade 12 with 5 credits including English & Mathematics"
+  },
+  {
+    "id": "A002",
+    "student": "Moffat Zimba",
+    "progId": "P001",
+    "status": "PENDING",
+    "quals": "Grade 12 with 6 credits, distinction in Science"
+  },
+  {
+    "id": "A003",
+    "student": "Doreen Zimba",
+    "progId": "P003",
+    "status": "PENDING",
+    "quals": "Grade 12 with 3 credits, certificate in Environmental Studies"
+  },
+  {
+    "id": "A004",
+    "student": "Kapijimpanga",
+    "progId": "P005",
+    "status": "PENDING",
+    "quals": "Grade 12 with 4 credits, diploma in Electrical Installation"
+  },
+  {
+    "id": "A005",
+    "student": "Bdhd",
+    "email": "sgdbbdbd@gmail.com",
+    "phone": "0974571833",
+    "progId": "P002",
+    "courseType": "alevel",
+    "nrc": "12344",
+    "status": "PENDING",
+    "quals": "alevel application\nNRC: 12344",
+    "grade12File": null,
+    "nrcFile": null,
+    "appliedAt": "2026-04-28T11:38:05.117Z"
+  }
+]

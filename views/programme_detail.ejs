@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= program.name %> – Ndola Hill College</title>
+  <style>
+    :root { --green-dark: #0b5e2f; --gold: #d4a017; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f4f6f8; color: #333; }
+    .top-bar { background: var(--green-dark); color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; position: relative; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
+    .logo h1 { font-size: 1.5rem; }
+    .logo .tagline { font-size: 0.8rem; opacity: 0.9; }
+    .nav a { color: white; margin: 0 10px; text-decoration: none; font-weight: 500; }
+    .nav a:hover, .nav a.active { border-bottom: 2px solid var(--gold); }
+    .hamburger { display: none; flex-direction: column; cursor: pointer; }
+    .hamburger span { width: 25px; height: 3px; background: white; margin: 2px 0; }
+    #menu-toggle { display: none; }
+    .mobile-menu { display: none; background: var(--green-dark); position: absolute; top: 60px; left: 0; width: 100%; z-index: 100; flex-direction: column; }
+    .mobile-menu a { color: white; padding: 12px 20px; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
+    .detail-card { background: white; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); padding: 30px; }
+    .detail-card h2 { color: var(--green-dark); margin-bottom: 20px; }
+    .meta { display: flex; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+    .meta-item { background: #e8f5e9; padding: 10px 15px; border-radius: 8px; }
+    .description { line-height: 1.8; margin-bottom: 30px; }
+    .cta-btn { display: inline-block; background: var(--gold); color: #000; padding: 15px 30px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 1.1rem; }
+    .back-link { color: var(--green-dark); text-decoration: underline; margin-top: 20px; display: inline-block; }
+    @media (max-width: 768px) {
+      .nav { display: none; }
+      .hamburger { display: flex; }
+      #menu-toggle:checked ~ .mobile-menu { display: flex; }
+    }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+<div class="top-bar">
+  <div class="logo">
+    <h1>Ndola Hill College</h1>
+    <div class="tagline">"Developing Skills, Building Futures"</div>
+  </div>
+  <label class="hamburger" for="menu-toggle"><span></span><span></span><span></span></label>
+  <div class="nav">
+    <a href="/">Home</a>
+    <a href="/programmes">Programmes</a>
+    <a href="/apply">Apply Now</a>
+    <a href="/about">About</a>
+    <a href="/contact">Contact</a>
+  </div>
+</div>
+<input type="checkbox" id="menu-toggle">
+<div class="mobile-menu">
+  <a href="/">Home</a><a href="/programmes">Programmes</a><a href="/apply">Apply Now</a><a href="/about">About</a><a href="/contact">Contact</a>
+</div>
+
+<div class="container">
+  <div class="detail-card">
+    <h2><%= program.name %></h2>
+    <div class="meta">
+      <div class="meta-item"><strong>Capacity:</strong> <%= program.capacity %> students</div>
+      <div class="meta-item"><strong>Fee:</strong> <%= program.fee || 'Contact us' %></div>
+    </div>
+    <div class="description">
+      <p><%= program.description || 'Detailed description coming soon.' %></p>
+    </div>
+    <a href="/apply" class="cta-btn">Apply for this programme</a>
+    <br><a href="/programmes" class="back-link">← Back to all programmes</a>
+  </div>
+</div>
+
+${FOOTER_HTML}
+</body>
+</html>

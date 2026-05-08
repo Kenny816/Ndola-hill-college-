@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About – Ndola Hill College</title>
+  <style>
+    :root { --green-dark: #0b5e2f; --gold: #d4a017; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f4f6f8; }
+    .top-bar { background: var(--green-dark); color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .nav a { color: white; margin: 0 10px; text-decoration: none; }
+    .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+    .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
+    .mission-vision { display: flex; gap: 20px; flex-wrap: wrap; }
+    .mv-item { flex: 1; min-width: 250px; background: #e8f5e9; padding: 20px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+<div class="top-bar">
+  <div><h1>Ndola Hill College</h1></div>
+  <div class="nav">
+    <a href="/">Home</a><a href="/programmes">Programmes</a><a href="/apply">Apply Now</a><a href="/about">About</a><a href="/contact">Contact</a>
+  </div>
+</div>
+
+<div class="container">
+  <h1>About Ndola Hill College</h1>
+  <div class="card">
+    <div class="mission-vision">
+      <div class="mv-item"><h3>Our Mission</h3><p>To provide accessible, industry‑relevant education that equips students with the skills to thrive in Zambia's mining and engineering sectors.</p></div>
+      <div class="mv-item"><h3>Our Vision</h3><p>To be the leading centre of excellence for technical training in Africa.</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Our History</h2>
+    <p>Founded in 2010, Ndola Hill College has grown from a small training centre to a respected institution partnered with major mining companies.</p>
+  </div>
+  <div class="card">
+    <h2>Our Team</h2>
+    <p>Led by experienced academics and industry professionals, our faculty brings real‑world expertise to the classroom.</p>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
+</body>
+</html>

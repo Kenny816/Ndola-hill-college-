@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Review Application</title>
+<style>body{margin:0;font-family:sans-serif;background:#f4f6f8}.top-bar{background:#0b5e2f;color:white;padding:12px 20px}.container{max-width:600px;margin:20px auto;padding:0 20px}.card{background:white;padding:20px;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.05)}.btn{display:inline-block;padding:8px 16px;background:#0b5e2f;color:white;text-decoration:none;border-radius:4px;margin-top:15px}</style>
+</head><body>
+<div class="top-bar"><h1>Review</h1></div><div class="container"><div class="card">
+<h2>Application – <%= application.id %></h2>
+<p><strong>Student:</strong> <%= application.student %></p>
+<p><strong>Programme:</strong> <%= application.progName %></p>
+<p><strong>Course Type:</strong> <%= application.courseType || '-' %></p>
+<p><strong>Status:</strong> <%= application.status %></p>
+<p><strong>NRC:</strong> <%= application.nrc || '-' %></p>
+<div style="background:#f9f9f9;padding:15px;border-radius:6px;margin:15px 0"><strong>Qualifications:</strong><p style="white-space:pre-wrap"><%= application.quals %></p>
+<% if(application.grade12File) { %><p><a href="/uploads/<%= application.grade12File %>" target="_blank">Download Grade 12 Certificate</a></p><% } %>
+<% if(application.nrcFile) { %><p><a href="/uploads/<%= application.nrcFile %>" target="_blank">Download NRC Copy</a></p><% } %>
+</div>
+<a href="/admin/applications" class="btn">Back</a></div></div></body></html>

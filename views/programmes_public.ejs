@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Programmes – Ndola Hill College</title>
+  <style>
+    :root { --green-dark: #0b5e2f; --gold: #d4a017; }
+    .programme-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; display: flex; flex-wrap: wrap; }
+    .programme-card h3 { margin: 0 0 10px; color: var(--green-dark); }
+    .badge { display: inline-block; padding: 4px 8px; background: var(--gold); color: black; border-radius: 4px; font-size: 0.8rem; margin-right: 5px; }
+  </style>
+</head>
+<body>
+<div class="top-bar"><h1>Ndola Hill College</h1><nav class="nav"><a href="/">Home</a><a href="/programmes">Programmes</a><a href="/apply">Apply Now</a><a href="/about">About</a><a href="/contact">Contact</a></nav></div>
+<div class="container">
+  <h1>Our Programmes</h1>
+  <div class="categories">
+    <span class="badge">Mining</span><span class="badge">Engineering</span><span class="badge">Environment</span><span class="badge">Technology</span>
+  </div>
+  <% programs.forEach(p => { %>
+    <div class="programme-card">
+      <div style="flex:1">
+        <h3><%= p.name %></h3>
+        <p><%= p.description.substring(0,100) %>...</p>
+        <p><strong>Fee:</strong> <%= p.fee %></p>
+      </div>
+      <div><a href="/programmes/<%= p.id %>" class="btn">Details</a></div>
+    </div>
+  <% }) %>
+</div>
+<%- include('partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,27 @@
+[
+  {
+    "id": "P001",
+    "name": "BSc Mining Engineering",
+    "capacity": 120
+  },
+  {
+    "id": "P002",
+    "name": "Diploma in Mineral Processing",
+    "capacity": 80
+  },
+  {
+    "id": "P003",
+    "name": "Certificate in Environmental Management",
+    "capacity": 60
+  },
+  {
+    "id": "P004",
+    "name": "BSc Computer Science",
+    "capacity": 150
+  },
+  {
+    "id": "P005",
+    "name": "Diploma in Electrical Engineering",
+    "capacity": 100
+  }
+]
