@@ -20,14 +20,17 @@
 <div class="bg-white py-3 border-bottom">
   <div class="container d-flex justify-content-center align-items-center flex-wrap gap-4">
     <span class="text-muted small">Proudly recognised by:</span>
-    <% var badge1 = (typeof site !== 'undefined' && site.trustBadge1) ? site.trustBadge1 : 'https://via.placeholder.com/80x30?text=TEVETA'; %>
-    <img src="<%= badge1 %>" alt="Accreditation" class="trust-badge" height="30">
-    <% var badge2 = (typeof site !== 'undefined' && site.trustBadge2) ? site.trustBadge2 : 'https://via.placeholder.com/80x30?text=EIZ'; %>
-    <img src="<%= badge2 %>" alt="Accreditation" class="trust-badge" height="30">
-    <% var badge3 = (typeof site !== 'undefined' && site.trustBadge3) ? site.trustBadge3 : 'https://via.placeholder.com/80x30?text=MoE'; %>
-    <img src="<%= badge3 %>" alt="Accreditation" class="trust-badge" height="30">
-    <% var badge4 = (typeof site !== 'undefined' && site.trustBadge4) ? site.trustBadge4 : 'https://via.placeholder.com/80x30?text=ZCCM-IH'; %>
-    <img src="<%= badge4 %>" alt="Accreditation" class="trust-badge" height="30">
+    <% var badges = ['trustBadge1', 'trustBadge2', 'trustBadge3', 'trustBadge4']; %>
+    <% var shown = false; %>
+    <% badges.forEach(function(badge) { %>
+      <% if (typeof site !== 'undefined' && site[badge]) { %>
+        <img src="<%= site[badge] %>" alt="Accreditation" class="trust-badge" style="height:40px; max-width:120px; object-fit:contain;">
+        <% shown = true; %>
+      <% } %>
+    <% }); %>
+    <% if (!shown) { %>
+      <span class="text-muted small">(Accreditations coming soon)</span>
+    <% } %>
   </div>
 </div>
 
@@ -72,6 +75,32 @@
   <h2 class="text-center text-green-dark mb-4 fade-up">Popular Programmes</h2>
   <div class="row g-4 mb-5 fade-up" id="popularProgrammes"></div>
 
+  <!-- Industry Partners (admin‑managed) -->
+  <% var partnersList = (typeof site !== 'undefined' && site.partners) ? site.partners : []; %>
+  <% if (partnersList.length > 0) { %>
+    <h2 class="text-center text-green-dark mb-4 fade-up">Our Industry Partners</h2>
+    <div class="d-flex flex-wrap justify-content-center gap-4 mb-5 fade-up">
+      <% partnersList.forEach(partner => { %>
+        <div class="partner-logo">
+          <img src="<%= partner.logo %>" alt="<%= partner.name %>" loading="lazy" style="max-width:120px; height:auto;">
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <!-- Campus Gallery (admin‑managed) -->
+  <% var gallery = (typeof site !== 'undefined' && site.gallery) ? site.gallery : []; %>
+  <% if (gallery.length > 0) { %>
+    <h2 class="text-center text-green-dark mb-4 fade-up">Campus Gallery</h2>
+    <div class="row g-3 mb-5 fade-up">
+      <% gallery.forEach(img => { %>
+        <div class="col-6 col-md-3">
+          <img src="<%= img.path %>" class="img-fluid rounded shadow-sm campus-gallery-img" alt="Campus" loading="lazy">
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+
   <!-- Testimonials Carousel -->
   <h2 class="text-center text-green-dark mb-4 fade-up">What Our Graduates Say</h2>
   <div class="carousel-container mb-5 position-relative fade-up" id="customCarousel">
@@ -90,7 +119,7 @@
 </div>
 
 <!-- Sticky mobile apply -->
-<a href="/apply" class="sticky-apply text-decoration-none"><i class="fas fa-pen-to-square me-1"></i> Apply Now – September 2026 Intake</a>
+<a href="/apply" class="sticky-apply text-decoration-none"><i class="fas fa-pen-to-square me-1"></i> Apply Now</a>
 
 <%- include('partials/footer') %>
 <script src="/js/main.js"></script>
