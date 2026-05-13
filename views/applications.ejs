@@ -15,11 +15,11 @@
 <div class="row g-4" id="appsGrid">
   <% if (applications.length === 0) { %><div class="col-12"><p class="text-muted">No pending/rejected applications.</p></div><% } %>
   <% applications.forEach(function(app, idx) { %>
-    <div class="col-xl-4 col-lg-6 app-tile" data-name="<%= (app.fullName||'').toLowerCase() %>" data-program="<%= (app.program||'').toLowerCase() %>">
+    <div class="col-xl-4 col-lg-6 app-tile" data-name="<%= (app.fullname||'').toLowerCase() %>" data-program="<%= (app.program||'').toLowerCase() %>">
       <div class="app-card bg-white p-3 d-flex flex-column h-100">
         <div class="d-flex justify-content-between align-items-start mb-2">
           <div>
-            <h5 class="fw-bold mb-0"><%= app.fullName %></h5>
+            <h5 class="fw-bold mb-0"><%= app.fullname %></h5>
             <small class="text-muted"><%= app.program %></small>
           </div>
           <div>
@@ -52,7 +52,7 @@
       <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header bg-green-dark text-white">
-            <h5 class="modal-title"><%= app.fullName %> – <%= app.program %></h5>
+            <h5 class="modal-title"><%= app.fullname %> – <%= app.program %></h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
@@ -71,7 +71,7 @@
                 <p><strong>Programme:</strong> <%= app.program %></p>
                 <p><strong>Entry Year:</strong> <%= app.year %></p>
                 <p><strong>Previous School:</strong> <%= app.school || '—' %></p>
-                <p><strong>Year Completed:</strong> <%= app.yearCompleted || '—' %></p>
+                <p><strong>Year Completed:</strong> <%= app.yearcompleted || '—' %></p>
               </div>
             </div>
             <% if (app.motivation) { %><hr><h6>Motivation Statement</h6><p><%= app.motivation %></p><% } %>
@@ -102,14 +102,14 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header bg-green-dark text-white">
-            <h5 class="modal-title">Edit Application – <%= app.fullName %></h5>
+            <h5 class="modal-title">Edit Application – <%= app.fullname %></h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
           <form method="POST" action="/admin/applications/edit/<%= app.id %>">
             <div class="modal-body">
               <div class="mb-3">
                 <label>Full Name</label>
-                <input type="text" name="fullName" class="form-control" value="<%= app.fullName %>" required>
+                <input type="text" name="fullName" class="form-control" value="<%= app.fullname %>" required>
               </div>
               <div class="mb-3">
                 <label>Phone</label>

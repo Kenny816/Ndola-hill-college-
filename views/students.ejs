@@ -7,7 +7,7 @@
     <div class="col-xl-4 col-lg-6">
       <div class="card border-0 shadow-sm h-100">
         <div class="card-body d-flex flex-column">
-          <h5 class="fw-bold"><%= student.fullName %></h5>
+          <h5 class="fw-bold"><%= student.fullname %></h5>
           <p class="mb-1"><i class="fas fa-graduation-cap me-1 text-muted"></i><%= student.program %></p>
           <p class="mb-1 small"><i class="fas fa-phone-alt me-1 text-muted"></i><%= student.phone %></p>
           <p class="mb-0 small"><i class="fas fa-calendar-alt me-1 text-muted"></i>Accepted: <%= student.date %></p>
@@ -33,7 +33,7 @@
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header bg-green-dark text-white">
-            <h5 class="modal-title"><%= student.fullName %></h5>
+            <h5 class="modal-title"><%= student.fullname %></h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
@@ -51,7 +51,7 @@
                 <p><strong>Gender:</strong> <%= student.gender || '—' %></p>
                 <p><strong>Address:</strong> <%= student.address || '—' %></p>
                 <p><strong>School:</strong> <%= student.school || '—' %></p>
-                <p><strong>Year Completed:</strong> <%= student.yearCompleted || '—' %></p>
+                <p><strong>Year Completed:</strong> <%= student.yearcompleted || '—' %></p>
               </div>
             </div>
             <% if (student.motivation) { %><hr><h6>Motivation</h6><p><%= student.motivation %></p><% } %>
