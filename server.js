@@ -92,7 +92,7 @@ app.post('/apply', upload.fields([
 
   await supabase.from('applications').insert({
     id: newId,
-    fullName: req.body.fullname,
+    fullname: req.body.fullname,
     nrc: req.body.nrc,
     phone: req.body.phone,
     email: req.body.email,
@@ -105,7 +105,7 @@ app.post('/apply', upload.fields([
     nationality: req.body.nationality || '',
     address: req.body.address || '',
     school: req.body.school || '',
-    yearCompleted: req.body.yearcompleted || '',
+    yearcompleted: req.body.yearcompleted || '',
     motivation: req.body.motivation || '',
     documents: { grade12: grade12Url, nrc_copy: nrcUrl, photo: photoUrl }
   });
