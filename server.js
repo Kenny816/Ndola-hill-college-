@@ -248,7 +248,7 @@ app.get('/admin/programs/edit/:id', async (req, res) => {
 });
 
 app.post('/admin/programs/save', upload.single('image'), async (req, res) => {
-  const { id, name, type, duration, fee, capacity, applicationFee, entryRequirements, description } = req.body;
+  const { id, name, type, duration, fee, capacity, applicationfee, entryrequirements, description } = req.body;
   let imagePath = '';
 
   if (req.file) {
@@ -257,7 +257,7 @@ app.post('/admin/programs/save', upload.single('image'), async (req, res) => {
     imagePath = `https://dckmoxtqsklegeetcgyl.supabase.co/storage/v1/object/public/uploads/programs/${filename}`;
   }
 
-  const obj = { name, type, duration, fee: parseInt(fee), capacity: parseInt(capacity), applicationFee: parseInt(applicationFee), entryRequirements, description };
+  const obj = { name, type, duration, fee: parseInt(fee), capacity: parseInt(capacity), applicationfee: parseInt(applicationfee), entryrequirements, description };
   if (imagePath) obj.image = imagePath;
 
   if (id) {
