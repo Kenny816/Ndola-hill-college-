@@ -5,6 +5,7 @@ const multer = require('multer');
 const bcrypt = require('bcryptjs');
 const path = require('path');
 const supabase = require('./supabase');
+const { toLowerKeys } = require('./db-helpers');
 
 const app = express();
 const PORT = 3000;
@@ -179,7 +180,7 @@ app.get('/admin/review', async (req, res) => {
 });
 
 app.post('/admin/review/:id', async (req, res) => {
-  await supabase.from('applications').update({ status: req.body.status }).eq('id', req.params.id);
+  await supabase.from('applications').update(toLowerKeys({ status: req.body.status })).eq('id', req.params.id);
   res.redirect(req.body.status === 'Approved' ? '/admin/students' : '/admin/review');
 });
 
@@ -189,18 +190,18 @@ app.post('/admin/applications/delete/:id', async (req, res) => {
 });
 
 app.post('/admin/students/notify/:id', async (req, res) => {
-  await supabase.from('applications').update({ notified: true }).eq('id', req.params.id);
+  await supabase.from('applications').update(toLowerKeys({ notified: true })).eq('id', req.params.id);
   res.redirect('/admin/students');
 });
 
 app.post('/admin/applications/edit/:id', async (req, res) => {
-  await supabase.from('applications').update({
+  await supabase.from('applications').update(toLowerKeys({
     fullName: req.body.fullname,
     phone: req.body.phone,
     email: req.body.email,
     program: req.body.program,
     year: req.body.year
-  }).eq('id', req.params.id);
+  })).eq('id', req.params.id);
   res.redirect('/admin/applications');
 });
 
@@ -211,7 +212,7 @@ app.post('/admin/documents/delete', async (req, res) => {
   if (app) {
     const docs = app.documents || {};
     docs[field] = '';
-    await supabase.from('applications').update({ documents: docs }).eq('id', appId);
+    await supabase.from('applications').update(toLowerKeys({ documents: docs })).eq('id', appId);
   }
   res.redirect('back');
 });
@@ -291,14 +292,14 @@ app.post('/admin/partners/add', upload.single('logo'), async (req, res) => {
     logoPath = `https://dckmoxtqsklegeetcgyl.supabase.co/storage/v1/object/public/uploads/partners/${filename}`;
   }
   partners.push({ id: Date.now().toString(), name: req.body.name, logo: logoPath });
-  await supabase.from('settings').update({ partners }).eq('id', 1);
+  await supabase.from('settings').update(toLowerKeys({ partners })).eq('id', 1);
   res.redirect('/admin/partners');
 });
 
 app.post('/admin/partners/delete/:id', async (req, res) => {
   const { data: settings } = await supabase.from('settings').select('*').eq('id', 1).single();
   const partners = (settings.partners || []).filter(p => p.id !== req.params.id);
-  await supabase.from('settings').update({ partners }).eq('id', 1);
+  await supabase.from('settings').update(toLowerKeys({ partners })).eq('id', 1);
   res.redirect('/admin/partners');
 });
 
@@ -316,14 +317,14 @@ app.post('/admin/gallery/upload', upload.array('images', 10), async (req, res) =
     await supabase.storage.from('uploads').upload(`gallery/${filename}`, file.buffer, { contentType: file.mimetype, upsert: true });
     gallery.push({ id: Date.now().toString() + Math.random(), path: `https://dckmoxtqsklegeetcgyl.supabase.co/storage/v1/object/public/uploads/gallery/${filename}` });
   }
-  await supabase.from('settings').update({ gallery }).eq('id', 1);
+  await supabase.from('settings').update(toLowerKeys({ gallery })).eq('id', 1);
   res.redirect('/admin/gallery');
 });
 
 app.post('/admin/gallery/delete/:id', async (req, res) => {
   const { data: settings } = await supabase.from('settings').select('*').eq('id', 1).single();
   const gallery = (settings.gallery || []).filter(img => img.id !== req.params.id);
-  await supabase.from('settings').update({ gallery }).eq('id', 1);
+  await supabase.from('settings').update(toLowerKeys({ gallery })).eq('id', 1);
   res.redirect('/admin/gallery');
 });
 
@@ -369,14 +370,14 @@ app.get('/admin/settings/delete-image', async (req, res) => {
     const parts = url.split('/');
     const path = parts.slice(parts.indexOf('uploads') + 1).join('/');
     await supabase.storage.from('uploads').remove([path]);
-    await supabase.from('settings').update({ [field]: '' }).eq('id', 1);
+    await supabase.from('settings').update(toLowerKeys({ [field]: '' })).eq('id', 1);
   }
   res.redirect('/admin/settings');
 });
 
 app.post('/admin/settings/password', async (req, res) => {
   const hash = bcrypt.hashSync(req.body.newPassword, 10);
-  await supabase.from('users').update({ password: hash }).eq('username', 'admin');
+  await supabase.from('users').update(toLowerKeys({ password: hash })).eq('username', 'admin');
   res.redirect('/admin/settings?pw=1');
 });
 
