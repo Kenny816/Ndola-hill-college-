@@ -168,7 +168,8 @@ app.get('/admin/applications', async (req, res) => {
 
 app.get('/admin/students', async (req, res) => {
   const { data } = await supabase.from('applications').select('*').eq('status', 'Approved');
-  res.render('students', { students: (data || []).map(toLowerKeys) });
+  const students = (data || []).map(toLowerKeys);
+  res.render('students', { students, notifyId: req.query.notifyId || null });
 });
 
 app.get('/admin/review', async (req, res) => {
@@ -178,7 +179,7 @@ app.get('/admin/review', async (req, res) => {
 
 app.post('/admin/review/:id', async (req, res) => {
   await supabase.from('applications').update({ status: req.body.status }).eq('id', req.params.id);
-  res.redirect(req.body.status === 'Approved' ? '/admin/students' : '/admin/review');
+  res.redirect(req.body.status === 'Approved' ? '/admin/students?notifyId=' + req.params.id : '/admin/review');
 });
 
 app.post('/admin/applications/delete/:id', async (req, res) => {
@@ -343,6 +344,7 @@ app.get('/admin/settings', async (req, res) => {
 });
 
 // Settings (POST – redirect after save)
+
 app.post('/admin/settings', upload.fields([
   { name: 'logo', maxCount: 1 },
   { name: 'headerBg', maxCount: 1 },
@@ -379,10 +381,7 @@ app.post('/admin/settings', upload.fields([
     const { error } = await supabase.storage
       .from('uploads')
       .upload(filename, file.buffer, { contentType: file.mimetype, upsert: true });
-    if (error) {
-      console.error('Upload error:', folder, error.message);
-      return null;
-    }
+    if (error) { console.error('Upload error:', error.message); return null; }
     return 'https://dckmoxtqsklegeetcgyl.supabase.co/storage/v1/object/public/uploads/' + filename;
   };
 
@@ -414,10 +413,8 @@ app.post('/admin/settings', upload.fields([
     console.error('Settings update error:', error.message);
     return res.status(500).send('Failed to save settings.');
   }
-
   res.redirect('/admin/settings?success=1');
 });
-
 app.get('/admin/settings/delete-image', async (req, res) => {
   const field = req.query.field;
   const dbField = field.toLowerCase();
