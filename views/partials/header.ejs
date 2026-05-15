@@ -15,6 +15,7 @@
     :root {
       --green-dark: <%= (typeof site !== 'undefined' && site.primaryColor) ? site.primaryColor : '#0b5e2f' %>;
       --gold: <%= (typeof site !== 'undefined' && site.accentColor) ? site.accentColor : '#d4a017' %>;
+      --hero-color: <%= (typeof site !== 'undefined' && site.heroColor) ? site.heroColor : '#0b5e2f' %>;
       --bg: #f8f9fa;
       --card-bg: #ffffff;
       --text: #333333;
@@ -30,8 +31,9 @@
     .btn-gold { background-color: var(--gold); color: #000; font-weight: 600; border: none; transition: all 0.3s; }
     .btn-gold:hover { background-color: color-mix(in srgb, var(--gold) 80%, black); }
     .hero {
+      background-color: var(--hero-color); /* fallback solid color */
       background-image: none;
-      transition: background-image 0.6s ease;
+      transition: background-image 0.6s ease, background-color 0.6s ease;
       color: #fff;
       padding: 120px 20px;
       position: relative;
@@ -39,6 +41,7 @@
     .hero.loaded {
       background-image: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%),
                         url('<%= (typeof site !== 'undefined' && site.heroBg) ? site.heroBg : "https://images.unsplash.com/photo-1523050854058-8df90910f7c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" %>');
+      /* If a heroBg image is set, it overlays the color; the color still shows as a fallback while image loads */
     }
     .hero::after {
       content: '';

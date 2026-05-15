@@ -21,6 +21,8 @@ const settingsKeyMap = {
   logo: 'logo',
   headerbg: 'headerBg',
   herobg: 'heroBg',
+  herocolor: 'heroColor',
+
   trustbadge1: 'trustBadge1',
   trustbadge2: 'trustBadge2',
   trustbadge3: 'trustBadge3',
