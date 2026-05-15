@@ -8,17 +8,15 @@
 </section>
 
 <div class="container my-5">
-  <!-- Search & Filter Bar -->
   <div class="row mb-4 fade-up">
     <div class="col-md-6 mx-auto">
       <div class="input-group">
         <span class="input-group-text bg-white"><i class="fas fa-search text-green-dark"></i></span>
-        <input type="text" id="programmeSearch" class="form-control" placeholder="Search programmes..." aria-label="Search programmes">
+        <input type="text" id="programmeSearch" class="form-control" placeholder="Search programmes...">
       </div>
     </div>
   </div>
 
-  <!-- Programmes Grid -->
   <div class="row g-4" id="programmesGrid">
     <% programs.forEach(function(program) { %>
       <div class="col-md-6 col-lg-4 programme-card" data-name="<%= program.name %>" data-type="<%= program.type %>">
@@ -28,16 +26,46 @@
               <h3 class="card-title h5 fw-bold"><%= program.name %></h3>
               <span class="badge bg-green-dark"><%= program.type %></span>
             </div>
-            <p class="card-text text-muted small"><i class="fas fa-file-invoice-dollar me-2"></i><strong>Application Fee:</strong> ZMW <%= program.applicationFee %></p>
-            <p class="card-text text-muted small"><i class="fas fa-check-circle me-2"></i><%= program.entryRequirements %></p>
-            <a href="/program/<%= program.id %>" class="btn btn-gold btn-sm mt-2"><i class="fas fa-info-circle me-1"></i>View Requirements</a>
+
+            <% if (program.applicationfee) { %>
+              <p class="card-text text-muted small">
+                <i class="fas fa-file-invoice-dollar me-2"></i><strong>Application Fee:</strong> ZMW <%= program.applicationfee %>
+              </p>
+            <% } %>
+
+            <% if (program.entryrequirements) { %>
+              <p class="card-text text-muted small">
+                <i class="fas fa-check-circle me-2"></i><%= program.entryrequirements %>
+              </p>
+            <% } %>
+
+            <% if (program.duration) { %>
+              <p class="card-text text-muted small">
+                <i class="fas fa-clock me-2"></i><strong>Duration:</strong> <%= program.duration %>
+              </p>
+            <% } %>
+
+            <% if (program.fee) { %>
+              <p class="card-text text-muted small">
+                <i class="fas fa-money-bill-wave me-2"></i><strong>Annual Fee:</strong> ZMW <%= program.fee %>
+              </p>
+            <% } %>
+
+            <% if (program.capacity) { %>
+              <p class="card-text text-muted small">
+                <i class="fas fa-users me-2"></i><strong>Capacity:</strong> <%= program.capacity %> students
+              </p>
+            <% } %>
+
+            <a href="/program/<%= program.id %>" class="btn btn-gold btn-sm mt-2">
+              <i class="fas fa-info-circle me-1"></i>View Details
+            </a>
           </div>
         </div>
       </div>
     <% }) %>
   </div>
 
-  <!-- Empty state (hidden by default) -->
   <div id="noResults" class="text-center py-5 d-none">
     <i class="fas fa-search fa-3x text-muted mb-3"></i>
     <h4>No programmes found</h4>
@@ -47,16 +75,15 @@
 
 <%- include('partials/footer') %>
 
-<!-- Script for live filtering -->
 <script>
   document.getElementById('programmeSearch').addEventListener('input', function(e) {
-    const query = e.target.value.toLowerCase();
-    const cards = document.querySelectorAll('.programme-card');
-    let visible = 0;
-    cards.forEach(card => {
-      const name = card.getAttribute('data-name').toLowerCase();
-      const type = card.getAttribute('data-type').toLowerCase();
-      if (name.includes(query) || type.includes(query)) {
+    var query = e.target.value.toLowerCase();
+    var cards = document.querySelectorAll('.programme-card');
+    var visible = 0;
+    cards.forEach(function(card) {
+      var name = card.getAttribute('data-name').toLowerCase();
+      var type = card.getAttribute('data-type').toLowerCase();
+      if (name.indexOf(query) > -1 || type.indexOf(query) > -1) {
         card.style.display = '';
         visible++;
       } else {

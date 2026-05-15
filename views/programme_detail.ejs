@@ -2,11 +2,8 @@
 
 <% if (program) { %>
 <style>
-  /* Timeline responsiveness */
   .timeline-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
-  .timeline-step {
-    flex: 1 1 100px; min-width: 80px; text-align: center; position: relative;
-  }
+  .timeline-step { flex: 1 1 100px; min-width: 80px; text-align: center; position: relative; }
   .timeline-step:not(:last-child)::after {
     content: '';
     position: absolute; top: 25px; right: -50%; width: 100%; height: 2px;
@@ -15,8 +12,7 @@
   @media (max-width: 768px) {
     .timeline-row { flex-direction: column; gap: 1.5rem; }
     .timeline-step:not(:last-child)::after {
-      top: auto; bottom: -1rem; left: 50%; width: 2px; height: 1.5rem;
-      right: auto;
+      top: auto; bottom: -1rem; left: 50%; width: 2px; height: 1.5rem; right: auto;
     }
     .timeline-step { flex: none; }
   }
@@ -40,14 +36,10 @@
     <div class="row align-items-center">
       <div class="col-md-8">
         <h1 class="display-5 fw-bold fs-3 fs-md-1"><%= program.name %></h1>
-        <span class="badge bg-gold text-dark px-3 py-2">
-          <%= program.type %>
-        </span>
+        <span class="badge bg-gold text-dark px-3 py-2"><%= program.type %></span>
       </div>
       <div class="col-md-4 text-md-end mt-3 mt-md-0">
-        <a href="/apply" class="btn btn-light rounded-pill text-green-dark fw-bold">
-          Apply Now
-        </a>
+        <a href="/apply" class="btn btn-light rounded-pill text-green-dark fw-bold">Apply Now</a>
       </div>
     </div>
   </div>
@@ -56,57 +48,73 @@
 <div class="container my-4 my-md-5">
   <div class="row">
     <div class="col-12">
-      <!-- Requirements Card -->
+      <!-- Programme Info Card -->
       <div class="card shadow-sm border-0 mb-4">
         <div class="card-body p-3 p-md-4">
-          <h2 class="text-green-dark h4 mb-3">Admission Requirements</h2>
-          <div class="row">
-            <div class="col-md-6 mb-3 mb-md-0">
-              <h5 class="h6">Application Fee</h5>
-              <p class="fs-5">ZMW <%= program.applicationFee %></p>
+          <h2 class="text-green-dark h4 mb-3">Programme Details</h2>
+
+          <% if (program.description) { %>
+            <div class="mb-4">
+              <h5><i class="fas fa-align-left me-2"></i>Description</h5>
+              <p><%= program.description %></p>
             </div>
-            <div class="col-md-6">
-              <h5 class="h6">Entry Qualifications</h5>
-              <p><%= program.entryRequirements %></p>
+          <% } %>
+
+          <% var hasAnyDetail = program.entryrequirements || program.applicationfee || program.duration || program.fee || program.capacity; %>
+
+          <% if (hasAnyDetail) { %>
+            <div class="row">
+              <% if (program.entryrequirements) { %>
+                <div class="col-md-6 mb-3">
+                  <h5><i class="fas fa-check-circle me-2"></i>Entry Qualifications</h5>
+                  <p><%= program.entryrequirements %></p>
+                </div>
+              <% } %>
+
+              <% if (program.applicationfee) { %>
+                <div class="col-md-6 mb-3">
+                  <h5><i class="fas fa-file-invoice-dollar me-2"></i>Application Fee</h5>
+                  <p>ZMW <%= program.applicationfee %></p>
+                </div>
+              <% } %>
             </div>
-          </div>
-          <hr>
-          <p class="text-muted small mb-0">
-            Full programme curriculum, duration, tuition fees, and other details are provided only to accepted candidates.
-          </p>
+
+            <div class="row">
+              <% if (program.duration) { %>
+                <div class="col-md-4 mb-3">
+                  <h5><i class="fas fa-clock me-2"></i>Duration</h5>
+                  <p><%= program.duration %></p>
+                </div>
+              <% } %>
+
+              <% if (program.fee) { %>
+                <div class="col-md-4 mb-3">
+                  <h5><i class="fas fa-money-bill-wave me-2"></i>Annual Fee</h5>
+                  <p>ZMW <%= program.fee %></p>
+                </div>
+              <% } %>
+
+              <% if (program.capacity) { %>
+                <div class="col-md-4 mb-3">
+                  <h5><i class="fas fa-users me-2"></i>Capacity</h5>
+                  <p><%= program.capacity %> students</p>
+                </div>
+              <% } %>
+            </div>
+          <% } %>
         </div>
       </div>
 
-      <!-- Application Process -->
+      <!-- Application Process (always shown) -->
       <div class="card shadow-sm border-0 mb-4">
         <div class="card-body p-3 p-md-4">
           <h2 class="text-green-dark h4 mb-4">Application Process</h2>
           <div class="timeline-row">
-            <div class="timeline-step">
-              <div class="step-circle">1</div>
-              <strong>Apply</strong>
-              <p class="small text-muted d-none d-md-block">Submit your application online.</p>
-            </div>
-            <div class="timeline-step">
-              <div class="step-circle">2</div>
-              <strong>Review</strong>
-              <p class="small text-muted d-none d-md-block">Our team reviews your qualifications.</p>
-            </div>
-            <div class="timeline-step">
-              <div class="step-circle">3</div>
-              <strong>Interview</strong>
-              <p class="small text-muted d-none d-md-block">Shortlisted candidates may be interviewed.</p>
-            </div>
-            <div class="timeline-step">
-              <div class="step-circle">4</div>
-              <strong>Acceptance</strong>
-              <p class="small text-muted d-none d-md-block">Receive your acceptance letter.</p>
-            </div>
-            <div class="timeline-step">
-              <div class="step-circle">5</div>
-              <strong>Full Details</strong>
-              <p class="small text-muted d-none d-md-block">Access complete programme info.</p>
-            </div>
+            <div class="timeline-step"><div class="step-circle">1</div><strong>Apply</strong><p class="small text-muted d-none d-md-block">Submit your application online.</p></div>
+            <div class="timeline-step"><div class="step-circle">2</div><strong>Review</strong><p class="small text-muted d-none d-md-block">Our team reviews your qualifications.</p></div>
+            <div class="timeline-step"><div class="step-circle">3</div><strong>Interview</strong><p class="small text-muted d-none d-md-block">Shortlisted candidates may be interviewed.</p></div>
+            <div class="timeline-step"><div class="step-circle">4</div><strong>Acceptance</strong><p class="small text-muted d-none d-md-block">Receive your acceptance letter.</p></div>
+            <div class="timeline-step"><div class="step-circle">5</div><strong>Full Details</strong><p class="small text-muted d-none d-md-block">Access complete programme info.</p></div>
           </div>
         </div>
       </div>
@@ -118,7 +126,6 @@
   </div>
 </div>
 
-<!-- Sticky mobile apply -->
 <a href="/apply" class="sticky-apply">Apply Now</a>
 
 <% } else { %>
