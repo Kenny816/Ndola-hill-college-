@@ -21,6 +21,9 @@
     <% programs.forEach(function(program) { %>
       <div class="col-md-6 col-lg-4 programme-card" data-name="<%= program.name %>" data-type="<%= program.type %>">
         <div class="card h-100 shadow-sm border-0 programme-card-inner">
+          <% if (program.image) { %>
+            <img src="<%= program.image %>" class="card-img-top" alt="<%= program.name %>" style="height:180px; object-fit:cover;">
+          <% } %>
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-3">
               <h3 class="card-title h5 fw-bold"><%= program.name %></h3>
