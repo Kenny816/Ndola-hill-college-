@@ -5,39 +5,37 @@ const multer = require('multer');
 const bcrypt = require('bcryptjs');
 const path = require('path');
 const supabase = require('./supabase');
-const { toLowerKeys } = require('./db-helpers');
+const { toLowerKeys, settingsToCamel } = require('./db-helpers');
 
 const app = express();
 const PORT = 3000;
 
-// ---------- Static files (absolute path for Vercel) ----------
+// Static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ---------- Session (stored in cookie, no server memory) ----------
+// Session
 app.use(cookieSession({
   name: 'ndola_session',
   secret: 'ndola-hill-college-secret-2026',
-  maxAge: 24 * 60 * 60 * 1000   // 24 hours
+  maxAge: 24 * 60 * 60 * 1000
 }));
 
-// ---------- Multer (memory storage, 5 MB limit) ----------
+// Multer (memory, 5MB)
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 5 * 1024 * 1024 }  // 5 MB
+  limits: { fileSize: 5 * 1024 * 1024 }
 });
 
-// ---------- Body parser ----------
 app.use(bodyParser.urlencoded({ extended: true }));
-
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Global settings middleware (same as before)
+// Global middleware – load settings as camelCase for all views
 app.use(async (req, res, next) => {
   try {
     const { data } = await supabase.from('settings').select('*').eq('id', 1).single();
-    res.locals.site = data || {};
-  } catch(e) { res.locals.site = {}; }
+    res.locals.site = settingsToCamel(data || {});
+  } catch (e) { res.locals.site = {}; }
   next();
 });
 
@@ -75,30 +73,32 @@ app.post('/apply', upload.fields([
   { name: 'nrc_copy', maxCount: 1 },
   { name: 'photo', maxCount: 1 }
 ]), async (req, res) => {
-  const uploadFile = async (file, filename) => {
+  const uploadFile = async (file, folder) => {
     if (!file) return '';
-    const { data, error } = await supabase.storage
+    const filename = folder + '/' + Date.now() + '-' + file.originalname;
+    const { error } = await supabase.storage
       .from('uploads')
-      .upload(`applications/${filename}`, file.buffer, { contentType: file.mimetype, upsert: true });
-    if (error) console.error('Upload error:', error);
-    return data ? `https://dckmoxtqsklegeetcgyl.supabase.co/storage/v1/object/public/uploads/applications/${filename}` : '';
+      .upload(filename, file.buffer, { contentType: file.mimetype, upsert: true });
+    if (error) console.error('Upload error:', error.message);
+    return error ? '' : `https://dckmoxtqsklegeetcgyl.supabase.co/storage/v1/object/public/uploads/${filename}`;
   };
 
-  const grade12Url = req.files.grade12 ? await uploadFile(req.files.grade12[0], Date.now() + '-' + req.files.grade12[0].originalname) : '';
-  const nrcUrl = req.files.nrc_copy ? await uploadFile(req.files.nrc_copy[0], Date.now() + '-' + req.files.nrc_copy[0].originalname) : '';
-  const photoUrl = req.files.photo ? await uploadFile(req.files.photo[0], Date.now() + '-' + req.files.photo[0].originalname) : '';
+  const grade12Url = req.files.grade12 ? await uploadFile(req.files.grade12[0], 'applications') : '';
+  const nrcUrl = req.files.nrc_copy ? await uploadFile(req.files.nrc_copy[0], 'applications') : '';
+  const photoUrl = req.files.photo ? await uploadFile(req.files.photo[0], 'applications') : '';
 
-  const { count } = await supabase.from('applications').select('id', { count: 'exact' });
-  const newId = 'APP' + ((count || 0) + 1).toString().padStart(3, '0');
+  const { data: existing } = await supabase.from('applications').select('id');
+  const maxNum = Math.max(0, ...(existing || []).map(a => parseInt(a.id.slice(3)) || 0));
+  const newId = 'APP' + (maxNum + 1).toString().padStart(3, '0');
 
-  await supabase.from('applications').insert({
+  const newApp = {
     id: newId,
-    fullname: req.body.fullname,
-    nrc: req.body.nrc,
-    phone: req.body.phone,
-    email: req.body.email,
-    program: req.body.program,
-    year: req.body.year,
+    fullname: req.body.fullName || '',
+    nrc: req.body.nrc || '',
+    phone: req.body.phone || '',
+    email: req.body.email || '',
+    program: req.body.program || '',
+    year: req.body.year || '',
     status: 'Pending',
     date: new Date().toISOString().slice(0,10),
     dob: req.body.dob || '',
@@ -106,21 +106,20 @@ app.post('/apply', upload.fields([
     nationality: req.body.nationality || '',
     address: req.body.address || '',
     school: req.body.school || '',
-    yearcompleted: req.body.yearcompleted || '',
+    yearcompleted: req.body.yearCompleted || '',
     motivation: req.body.motivation || '',
     documents: { grade12: grade12Url, nrc_copy: nrcUrl, photo: photoUrl }
-  });
+  };
 
-  const { data: programs } = await supabase.from('programs').select('*');
-  res.render('apply_success', { applicationId: newId, programs: programs || [] });
+  await supabase.from('applications').insert(toLowerKeys(newApp));
+  res.render('apply_success', { applicationId: newId, programs: [] });
 });
 
-// Tracking
 app.get('/track', (req, res) => res.render('track', { error: null }));
 app.post('/track/status', async (req, res) => {
   const { data: app } = await supabase.from('applications').select('*').eq('id', req.body.appId).eq('nrc', req.body.nrc).single();
   if (!app) return res.render('track', { error: 'Application not found.' });
-  res.render('status', { application: app });
+  res.render('status', { application: toLowerKeys(app) });
 });
 
 app.get('/acceptance/:id', async (req, res) => {
@@ -129,12 +128,11 @@ app.get('/acceptance/:id', async (req, res) => {
   if (req.query.nrc !== app.nrc) return res.status(403).send('Access denied.');
   const { data: settings } = await supabase.from('settings').select('*').eq('id', 1).single();
   res.render('acceptance_letter', {
-    application: app,
-    college: { name: settings.collegeName, address: settings.address, email: settings.email, logo: settings.logo }
+    application: toLowerKeys(app),
+    college: { name: settings.collegename, address: settings.address, email: settings.email, logo: settings.logo }
   });
 });
 
-// API
 app.get('/api/programs', async (req, res) => {
   const { data } = await supabase.from('programs').select('*');
   res.json(data || []);
@@ -150,7 +148,6 @@ app.post('/admin/login', async (req, res) => {
   }
   res.render('login', { error: 'Invalid credentials' });
 });
-
 app.get('/admin/logout', (req, res) => { req.session = null; res.redirect('/admin/login'); });
 
 app.use('/admin', requireAuth);
@@ -161,26 +158,26 @@ app.get('/admin/dashboard', async (req, res) => {
   const apps = applications || [];
   const pending = apps.filter(a => a.status === 'Pending').length;
   const approved = apps.filter(a => a.status === 'Approved').length;
-  res.render('dashboard', { applications: apps, programs: programs || [], pending, approved });
+  res.render('dashboard', { applications: apps.map(toLowerKeys), programs: programs || [], pending, approved });
 });
 
 app.get('/admin/applications', async (req, res) => {
   const { data } = await supabase.from('applications').select('*').neq('status', 'Approved');
-  res.render('applications', { applications: data || [] });
+  res.render('applications', { applications: (data || []).map(toLowerKeys) });
 });
 
 app.get('/admin/students', async (req, res) => {
   const { data } = await supabase.from('applications').select('*').eq('status', 'Approved');
-  res.render('students', { students: data || [] });
+  res.render('students', { students: (data || []).map(toLowerKeys) });
 });
 
 app.get('/admin/review', async (req, res) => {
   const { data } = await supabase.from('applications').select('*').eq('status', 'Rejected');
-  res.render('review', { applications: data || [] });
+  res.render('review', { applications: (data || []).map(toLowerKeys) });
 });
 
 app.post('/admin/review/:id', async (req, res) => {
-  await supabase.from('applications').update(toLowerKeys({ status: req.body.status })).eq('id', req.params.id);
+  await supabase.from('applications').update({ status: req.body.status }).eq('id', req.params.id);
   res.redirect(req.body.status === 'Approved' ? '/admin/students' : '/admin/review');
 });
 
@@ -190,18 +187,18 @@ app.post('/admin/applications/delete/:id', async (req, res) => {
 });
 
 app.post('/admin/students/notify/:id', async (req, res) => {
-  await supabase.from('applications').update(toLowerKeys({ notified: true })).eq('id', req.params.id);
+  await supabase.from('applications').update({ notified: true }).eq('id', req.params.id);
   res.redirect('/admin/students');
 });
 
 app.post('/admin/applications/edit/:id', async (req, res) => {
-  await supabase.from('applications').update(toLowerKeys({
-    fullName: req.body.fullname,
+  await supabase.from('applications').update({
+    fullname: req.body.fullName || req.body.fullname,
     phone: req.body.phone,
     email: req.body.email,
     program: req.body.program,
     year: req.body.year
-  })).eq('id', req.params.id);
+  }).eq('id', req.params.id);
   res.redirect('/admin/applications');
 });
 
@@ -212,7 +209,7 @@ app.post('/admin/documents/delete', async (req, res) => {
   if (app) {
     const docs = app.documents || {};
     docs[field] = '';
-    await supabase.from('applications').update(toLowerKeys({ documents: docs })).eq('id', appId);
+    await supabase.from('applications').update({ documents: docs }).eq('id', appId);
   }
   res.redirect('back');
 });
@@ -253,20 +250,28 @@ app.post('/admin/programs/save', upload.single('image'), async (req, res) => {
   let imagePath = '';
 
   if (req.file) {
-    const filename = Date.now() + '-' + req.file.originalname;
-    await supabase.storage.from('uploads').upload(`programs/${filename}`, req.file.buffer, { contentType: req.file.mimetype, upsert: true });
-    imagePath = `https://dckmoxtqsklegeetcgyl.supabase.co/storage/v1/object/public/uploads/programs/${filename}`;
+    const filename = 'programs/' + Date.now() + '-' + req.file.originalname;
+    await supabase.storage.from('uploads').upload(filename, req.file.buffer, { contentType: req.file.mimetype, upsert: true });
+    imagePath = `https://dckmoxtqsklegeetcgyl.supabase.co/storage/v1/object/public/uploads/${filename}`;
   }
 
-  const obj = { name, type, duration, fee: parseInt(fee), capacity: parseInt(capacity), applicationfee: parseInt(applicationfee), entryrequirements, description };
+  const obj = {
+    name, type, duration,
+    fee: parseInt(fee),
+    capacity: parseInt(capacity),
+    applicationfee: parseInt(applicationfee) || 0,
+    entryrequirements,
+    description: description || ''
+  };
   if (imagePath) obj.image = imagePath;
 
   if (id) {
-    await supabase.from('programs').update(obj).eq('id', id);
+    await supabase.from('programs').update(toLowerKeys(obj)).eq('id', id);
   } else {
-    const { count } = await supabase.from('programs').select('id', { count: 'exact' });
-    obj.id = 'P' + ((count || 0) + 1).toString().padStart(3, '0');
-    await supabase.from('programs').insert(obj);
+    const { data: existing } = await supabase.from('programs').select('id');
+    const maxNum = Math.max(0, ...(existing || []).map(p => parseInt(p.id.slice(1)) || 0));
+    obj.id = 'P' + (maxNum + 1).toString().padStart(3, '0');
+    await supabase.from('programs').insert(toLowerKeys(obj));
   }
   res.redirect('/admin/programs');
 });
@@ -287,19 +292,19 @@ app.post('/admin/partners/add', upload.single('logo'), async (req, res) => {
   const partners = settings.partners || [];
   let logoPath = '';
   if (req.file) {
-    const filename = Date.now() + '-' + req.file.originalname;
-    await supabase.storage.from('uploads').upload(`partners/${filename}`, req.file.buffer, { contentType: req.file.mimetype, upsert: true });
-    logoPath = `https://dckmoxtqsklegeetcgyl.supabase.co/storage/v1/object/public/uploads/partners/${filename}`;
+    const filename = 'partners/' + Date.now() + '-' + req.file.originalname;
+    await supabase.storage.from('uploads').upload(filename, req.file.buffer, { contentType: req.file.mimetype, upsert: true });
+    logoPath = `https://dckmoxtqsklegeetcgyl.supabase.co/storage/v1/object/public/uploads/${filename}`;
   }
   partners.push({ id: Date.now().toString(), name: req.body.name, logo: logoPath });
-  await supabase.from('settings').update(toLowerKeys({ partners })).eq('id', 1);
+  await supabase.from('settings').update({ partners }).eq('id', 1);
   res.redirect('/admin/partners');
 });
 
 app.post('/admin/partners/delete/:id', async (req, res) => {
   const { data: settings } = await supabase.from('settings').select('*').eq('id', 1).single();
   const partners = (settings.partners || []).filter(p => p.id !== req.params.id);
-  await supabase.from('settings').update(toLowerKeys({ partners })).eq('id', 1);
+  await supabase.from('settings').update({ partners }).eq('id', 1);
   res.redirect('/admin/partners');
 });
 
@@ -313,75 +318,120 @@ app.post('/admin/gallery/upload', upload.array('images', 10), async (req, res) =
   const { data: settings } = await supabase.from('settings').select('*').eq('id', 1).single();
   const gallery = settings.gallery || [];
   for (const file of req.files) {
-    const filename = Date.now() + '-' + Math.random().toString(36).slice(2) + '-' + file.originalname;
-    await supabase.storage.from('uploads').upload(`gallery/${filename}`, file.buffer, { contentType: file.mimetype, upsert: true });
-    gallery.push({ id: Date.now().toString() + Math.random(), path: `https://dckmoxtqsklegeetcgyl.supabase.co/storage/v1/object/public/uploads/gallery/${filename}` });
+    const filename = 'gallery/' + Date.now() + '-' + Math.random().toString(36).slice(2) + '-' + file.originalname;
+    await supabase.storage.from('uploads').upload(filename, file.buffer, { contentType: file.mimetype, upsert: true });
+    gallery.push({ id: Date.now().toString() + Math.random(), path: `https://dckmoxtqsklegeetcgyl.supabase.co/storage/v1/object/public/uploads/${filename}` });
   }
-  await supabase.from('settings').update(toLowerKeys({ gallery })).eq('id', 1);
+  await supabase.from('settings').update({ gallery }).eq('id', 1);
   res.redirect('/admin/gallery');
 });
 
 app.post('/admin/gallery/delete/:id', async (req, res) => {
   const { data: settings } = await supabase.from('settings').select('*').eq('id', 1).single();
   const gallery = (settings.gallery || []).filter(img => img.id !== req.params.id);
-  await supabase.from('settings').update(toLowerKeys({ gallery })).eq('id', 1);
+  await supabase.from('settings').update({ gallery }).eq('id', 1);
   res.redirect('/admin/gallery');
 });
 
-// Settings
+// Settings (GET)
 app.get('/admin/settings', async (req, res) => {
   const { data: settings } = await supabase.from('settings').select('*').eq('id', 1).single();
-  res.render('settings', { settings: settings || {}, success: null });
+  res.render('settings', {
+    settings: settingsToCamel(settings || {}),
+    success: req.query.success ? 'Settings saved.' : null
+  });
 });
 
+// Settings (POST – redirect after save)
 app.post('/admin/settings', upload.fields([
-  { name: 'logo', maxCount: 1 }, { name: 'headerBg', maxCount: 1 }, { name: 'heroBg', maxCount: 1 },
-  { name: 'trustBadge1', maxCount: 1 }, { name: 'trustBadge2', maxCount: 1 }, { name: 'trustBadge3', maxCount: 1 }, { name: 'trustBadge4', maxCount: 1 }
+  { name: 'logo', maxCount: 1 },
+  { name: 'headerBg', maxCount: 1 },
+  { name: 'heroBg', maxCount: 1 },
+  { name: 'trustBadge1', maxCount: 1 },
+  { name: 'trustBadge2', maxCount: 1 },
+  { name: 'trustBadge3', maxCount: 1 },
+  { name: 'trustBadge4', maxCount: 1 }
 ]), async (req, res) => {
-  const updateObj = {};
-  ['collegeName','email','phone','address','motto','vision','allowedUploadFormats','allowedDownloadFormats'].forEach(f => {
-    if (req.body[f] !== undefined) updateObj[f] = req.body[f];
-  });
+  const { data: current } = await supabase.from('settings').select('*').eq('id', 1).single();
+  const prev = current || {};
+
+  const updateObj = {
+    collegename: req.body.collegeName || prev.collegename,
+    motto: req.body.motto || prev.motto,
+    vision: req.body.vision || prev.vision,
+    email: req.body.email || prev.email,
+    phone: req.body.phone || prev.phone,
+    address: req.body.address || prev.address,
+    alloweduploadformats: req.body.allowedUploadFormats || prev.alloweduploadformats,
+    alloweddownloadformats: req.body.allowedDownloadFormats || prev.alloweddownloadformats
+  };
 
   const uploadFile = async (file, folder) => {
-    if (!file) return '';
+    if (!file) return null;
     const filename = folder + '/' + Date.now() + '-' + file.originalname;
-    await supabase.storage.from('uploads').upload(filename, file.buffer, { contentType: file.mimetype, upsert: true });
-    return `https://dckmoxtqsklegeetcgyl.supabase.co/storage/v1/object/public/uploads/${filename}`;
+    const { error } = await supabase.storage
+      .from('uploads')
+      .upload(filename, file.buffer, { contentType: file.mimetype, upsert: true });
+    if (error) {
+      console.error('Upload error:', folder, error.message);
+      return null;
+    }
+    return 'https://dckmoxtqsklegeetcgyl.supabase.co/storage/v1/object/public/uploads/' + filename;
   };
-  if (req.files.logo) updateObj.logo = await uploadFile(req.files.logo[0], 'logo');
-  if (req.files.headerBg) updateObj.headerBg = await uploadFile(req.files.headerBg[0], 'headerbg');
-  if (req.files.heroBg) updateObj.heroBg = await uploadFile(req.files.heroBg[0], 'hero');
-  for (let i = 1; i <= 4; i++) {
-    if (req.files[`trustBadge${i}`]) updateObj[`trustBadge${i}`] = await uploadFile(req.files[`trustBadge${i}`][0], 'badges');
+
+  if (req.files) {
+    if (req.files.logo && req.files.logo[0]) {
+      const url = await uploadFile(req.files.logo[0], 'logo');
+      if (url) updateObj.logo = url;
+    }
+    if (req.files.headerBg && req.files.headerBg[0]) {
+      const url = await uploadFile(req.files.headerBg[0], 'headerbg');
+      if (url) updateObj.headerbg = url;
+    }
+    if (req.files.heroBg && req.files.heroBg[0]) {
+      const url = await uploadFile(req.files.heroBg[0], 'hero');
+      if (url) updateObj.herobg = url;
+    }
+    for (let i = 1; i <= 4; i++) {
+      const fieldName = 'trustBadge' + i;
+      const dbKey = 'trustbadge' + i;
+      if (req.files[fieldName] && req.files[fieldName][0]) {
+        const url = await uploadFile(req.files[fieldName][0], 'badges');
+        if (url) updateObj[dbKey] = url;
+      }
+    }
   }
 
-  await supabase.from('settings').update(updateObj).eq('id', 1);
-  const { data: settings } = await supabase.from('settings').select('*').eq('id', 1).single();
-  res.render('settings', { settings, success: 'Settings saved.' });
+  const { error } = await supabase.from('settings').update(updateObj).eq('id', 1);
+  if (error) {
+    console.error('Settings update error:', error.message);
+    return res.status(500).send('Failed to save settings.');
+  }
+
+  res.redirect('/admin/settings?success=1');
 });
 
 app.get('/admin/settings/delete-image', async (req, res) => {
   const field = req.query.field;
-  if (!field) return res.redirect('/admin/settings');
-  const { data: settings } = await supabase.from('settings').select(field).eq('id', 1).single();
-  if (settings && settings[field]) {
-    const url = settings[field];
+  const dbField = field.toLowerCase();
+  if (!dbField) return res.redirect('/admin/settings');
+  const { data: settings } = await supabase.from('settings').select(dbField).eq('id', 1).single();
+  if (settings && settings[dbField]) {
+    const url = settings[dbField];
     const parts = url.split('/');
     const path = parts.slice(parts.indexOf('uploads') + 1).join('/');
     await supabase.storage.from('uploads').remove([path]);
-    await supabase.from('settings').update(toLowerKeys({ [field]: '' })).eq('id', 1);
+    await supabase.from('settings').update({ [dbField]: '' }).eq('id', 1);
   }
   res.redirect('/admin/settings');
 });
 
 app.post('/admin/settings/password', async (req, res) => {
   const hash = bcrypt.hashSync(req.body.newPassword, 10);
-  await supabase.from('users').update(toLowerKeys({ password: hash })).eq('username', 'admin');
+  await supabase.from('users').update({ password: hash }).eq('username', 'admin');
   res.redirect('/admin/settings?pw=1');
 });
 
-// Vercel / local export
 if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, () => console.log('Server running on http://localhost:' + PORT));
 }

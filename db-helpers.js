@@ -1,6 +1,3 @@
-/**
- * Convert an object's keys to lowercase (recursively for simple objects).
- */
 function toLowerKeys(obj) {
   if (Array.isArray(obj)) return obj.map(toLowerKeys);
   if (obj !== null && typeof obj === 'object') {
@@ -13,4 +10,34 @@ function toLowerKeys(obj) {
   return obj;
 }
 
-module.exports = { toLowerKeys };
+const settingsKeyMap = {
+  id: 'id',
+  collegename: 'collegeName',
+  motto: 'motto',
+  vision: 'vision',
+  email: 'email',
+  phone: 'phone',
+  address: 'address',
+  logo: 'logo',
+  headerbg: 'headerBg',
+  herobg: 'heroBg',
+  trustbadge1: 'trustBadge1',
+  trustbadge2: 'trustBadge2',
+  trustbadge3: 'trustBadge3',
+  trustbadge4: 'trustBadge4',
+  alloweduploadformats: 'allowedUploadFormats',
+  alloweddownloadformats: 'allowedDownloadFormats',
+  partners: 'partners',
+  gallery: 'gallery'
+};
+
+function settingsToCamel(obj) {
+  if (!obj) return {};
+  const result = {};
+  for (const key in obj) {
+    result[settingsKeyMap[key] || key] = obj[key];
+  }
+  return result;
+}
+
+module.exports = { toLowerKeys, settingsToCamel };
