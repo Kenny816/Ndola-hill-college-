@@ -34,7 +34,7 @@ const settingsKeyMap = {
 stat_graduates: 'statGraduates',
   stat_employment_rate: 'statEmploymentRate',
   stat_jobs: 'statJobs',
-  stat_programmes: 'statProgrammes',,
+  stat_programmes: 'statProgrammes',
 primarycolor: 'primaryColor',
   accentcolor: 'accentColor',
 };
