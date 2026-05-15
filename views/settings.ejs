@@ -13,86 +13,69 @@
       <div class="mb-3"><label>Phone</label><input name="phone" class="form-control" value="<%= settings.phone %>"></div>
       <div class="mb-3"><label>Address</label><input name="address" class="form-control" value="<%= settings.address %>"></div>
 
-      <h5 class="mt-4">Statistics (shown on homepage)</h5>
+      <h5 class="mt-4">Email (SMTP) Configuration</h5>
       <div class="row g-2">
-        <div class="col-6">
-          <label>Graduates</label>
-          <input name="statGraduates" class="form-control" value="<%= settings.statGraduates || '2500+' %>">
+        <div class="col-md-6">
+          <label>SMTP Host</label>
+          <input name="smtpHost" class="form-control" value="<%= settings.smtpHost || '' %>" placeholder="smtp.gmail.com">
         </div>
-        <div class="col-6">
-          <label>Employment Rate</label>
-          <input name="statEmploymentRate" class="form-control" value="<%= settings.statEmploymentRate || '87%' %>">
+        <div class="col-md-3">
+          <label>Port</label>
+          <input name="smtpPort" class="form-control" value="<%= settings.smtpPort || '587' %>" placeholder="587">
         </div>
-        <div class="col-6">
-          <label>Industry Jobs</label>
-          <input name="statJobs" class="form-control" value="<%= settings.statJobs || '13,000+' %>">
+        <div class="col-md-3">
+          <label>From Email</label>
+          <input name="smtpFrom" class="form-control" value="<%= settings.smtpFrom || '' %>" placeholder="college@gmail.com">
         </div>
-        <div class="col-6">
-          <label>Programmes</label>
-          <input name="statProgrammes" class="form-control" value="<%= settings.statProgrammes || '15+' %>">
+        <div class="col-md-6">
+          <label>Username</label>
+          <input name="smtpUser" class="form-control" value="<%= settings.smtpUser || '' %>" placeholder="college@gmail.com">
         </div>
+        <div class="col-md-6">
+          <label>Password / App Password</label>
+          <input type="password" name="smtpPass" class="form-control" value="<%= settings.smtpPass || '' %>" placeholder="App password (if Gmail)">
+        </div>
+      </div>
+      <small class="text-muted">Required to send acceptance emails. Gmail: use an <a href="https://support.google.com/accounts/answer/185833" target="_blank">App Password</a>.</small>
+
+      <h5 class="mt-4">Statistics</h5>
+      <div class="row g-2">
+        <div class="col-6"><label>Graduates</label><input name="statGraduates" class="form-control" value="<%= settings.statGraduates || '2500+' %>"></div>
+        <div class="col-6"><label>Employment Rate</label><input name="statEmploymentRate" class="form-control" value="<%= settings.statEmploymentRate || '87%' %>"></div>
+        <div class="col-6"><label>Industry Jobs</label><input name="statJobs" class="form-control" value="<%= settings.statJobs || '13,000+' %>"></div>
+        <div class="col-6"><label>Programmes</label><input name="statProgrammes" class="form-control" value="<%= settings.statProgrammes || '15+' %>"></div>
       </div>
 
       <h5 class="mt-4">Colors</h5>
       <div class="row">
-        <div class="col-4">
-          <label>Primary Color</label>
-          <input type="color" name="primaryColor" class="form-control form-control-color" value="<%= settings.primaryColor || '#0b5e2f' %>">
-        </div>
-        <div class="col-4">
-          <label>Accent Color</label>
-          <input type="color" name="accentColor" class="form-control form-control-color" value="<%= settings.accentColor || '#d4a017' %>">
-        </div>
-        <div class="col-4">
-          <label>Hero BG Color</label>
-          <input type="color" name="heroColor" class="form-control form-control-color" value="<%= settings.heroColor || '#0b5e2f' %>">
-          <small class="text-muted">Background behind hero text</small>
-        </div>
+        <div class="col-4"><label>Primary Color</label><input type="color" name="primaryColor" class="form-control form-control-color" value="<%= settings.primaryColor || '#0b5e2f' %>"></div>
+        <div class="col-4"><label>Accent Color</label><input type="color" name="accentColor" class="form-control form-control-color" value="<%= settings.accentColor || '#d4a017' %>"></div>
+        <div class="col-4"><label>Hero BG Color</label><input type="color" name="heroColor" class="form-control form-control-color" value="<%= settings.heroColor || '#0b5e2f' %>"></div>
       </div>
 
       <h5 class="mt-4">Document Formats</h5>
-      <div class="mb-3">
-        <label>Allowed Upload Formats</label>
-        <input name="allowedUploadFormats" class="form-control" value="<%= settings.allowedUploadFormats %>" placeholder=".pdf,.jpg,.jpeg,.png">
-        <small class="text-muted">Comma-separated extensions, e.g. .pdf,.jpg,.png</small>
-      </div>
-      <div class="mb-3">
-        <label>Allowed Download Formats</label>
-        <input name="allowedDownloadFormats" class="form-control" value="<%= settings.allowedDownloadFormats %>" placeholder=".pdf,.jpg,.jpeg,.png">
-        <small class="text-muted">Files with these extensions can be downloaded.</small>
-      </div>
+      <div class="mb-3"><label>Allowed Upload Formats</label><input name="allowedUploadFormats" class="form-control" value="<%= settings.allowedUploadFormats %>"></div>
+      <div class="mb-3"><label>Allowed Download Formats</label><input name="allowedDownloadFormats" class="form-control" value="<%= settings.allowedDownloadFormats %>"></div>
 
       <h5 class="mt-4">Images</h5>
       <!-- Logo -->
-      <div class="mb-3">
-        <label>Logo</label>
+      <div class="mb-3"><label>Logo</label>
         <div class="d-flex align-items-center gap-2 mb-2">
-          <% if (settings.logo) { %>
-            <img src="<%= settings.logo %>" style="max-height:40px;">
-            <a href="/admin/settings/delete-image?field=logo" class="btn btn-sm p-0 text-danger" title="Delete logo" onclick="return confirm('Delete logo?');"><i class="fas fa-trash"></i></a>
-          <% } else { %><span class="text-muted small">Not set</span><% } %>
+          <% if (settings.logo) { %><img src="<%= settings.logo %>" style="max-height:40px;"><a href="/admin/settings/delete-image?field=logo" class="btn btn-sm p-0 text-danger" title="Delete" onclick="return confirm('Delete logo?');"><i class="fas fa-trash"></i></a><% } else { %><span class="text-muted small">Not set</span><% } %>
         </div>
         <input type="file" name="logo" class="form-control" accept="image/*">
       </div>
       <!-- Header Background -->
-      <div class="mb-3">
-        <label>Header Background</label>
+      <div class="mb-3"><label>Header Background</label>
         <div class="d-flex align-items-center gap-2 mb-2">
-          <% if (settings.headerBg) { %>
-            <img src="<%= settings.headerBg %>" style="max-height:40px;">
-            <a href="/admin/settings/delete-image?field=headerBg" class="btn btn-sm p-0 text-danger" title="Delete" onclick="return confirm('Delete header background?');"><i class="fas fa-trash"></i></a>
-          <% } else { %><span class="text-muted small">Not set</span><% } %>
+          <% if (settings.headerBg) { %><img src="<%= settings.headerBg %>" style="max-height:40px;"><a href="/admin/settings/delete-image?field=headerBg" class="btn btn-sm p-0 text-danger" title="Delete" onclick="return confirm('Delete header background?');"><i class="fas fa-trash"></i></a><% } else { %><span class="text-muted small">Not set</span><% } %>
         </div>
         <input type="file" name="headerBg" class="form-control" accept="image/*">
       </div>
       <!-- Hero Background -->
-      <div class="mb-3">
-        <label>Hero Background Image</label>
+      <div class="mb-3"><label>Hero Background Image</label>
         <div class="d-flex align-items-center gap-2 mb-2">
-          <% if (settings.heroBg) { %>
-            <img src="<%= settings.heroBg %>" style="max-height:40px;">
-            <a href="/admin/settings/delete-image?field=heroBg" class="btn btn-sm p-0 text-danger" title="Delete" onclick="return confirm('Delete hero background?');"><i class="fas fa-trash"></i></a>
-          <% } else { %><span class="text-muted small">Not set</span><% } %>
+          <% if (settings.heroBg) { %><img src="<%= settings.heroBg %>" style="max-height:40px;"><a href="/admin/settings/delete-image?field=heroBg" class="btn btn-sm p-0 text-danger" title="Delete" onclick="return confirm('Delete hero background?');"><i class="fas fa-trash"></i></a><% } else { %><span class="text-muted small">Not set</span><% } %>
         </div>
         <input type="file" name="heroBg" class="form-control" accept="image/*">
       </div>
@@ -101,13 +84,9 @@
       <% var bad = ['trustBadge1','trustBadge2','trustBadge3','trustBadge4']; %>
       <div class="row g-2">
         <% bad.forEach(function(b, i) { %>
-          <div class="col-6">
-            <label>Badge <%= i+1 %></label>
+          <div class="col-6"><label>Badge <%= i+1 %></label>
             <div class="d-flex align-items-center gap-2 mb-2">
-              <% if (settings[b]) { %>
-                <img src="<%= settings[b] %>" style="max-height:30px;">
-                <a href="/admin/settings/delete-image?field=<%= b %>" class="btn btn-sm p-0 text-danger" title="Delete" onclick="return confirm('Delete this badge?');"><i class="fas fa-trash"></i></a>
-              <% } else { %><span class="text-muted small">Not set</span><% } %>
+              <% if (settings[b]) { %><img src="<%= settings[b] %>" style="max-height:30px;"><a href="/admin/settings/delete-image?field=<%= b %>" class="btn btn-sm p-0 text-danger" title="Delete" onclick="return confirm('Delete this badge?');"><i class="fas fa-trash"></i></a><% } else { %><span class="text-muted small">Not set</span><% } %>
             </div>
             <input type="file" name="<%= b %>" class="form-control" accept="image/*">
           </div>

@@ -5,6 +5,7 @@ const multer = require('multer');
 const bcrypt = require('bcryptjs');
 const path = require('path');
 const supabase = require('./supabase');
+const nodemailer = require('nodemailer');
 const { toLowerKeys, settingsToCamel } = require('./db-helpers');
 
 const app = express();
@@ -372,7 +373,12 @@ app.post('/admin/settings', upload.fields([
     stat_graduates: req.body.statGraduates || prev.stat_graduates || '2500+',
     stat_employment_rate: req.body.statEmploymentRate || prev.stat_employment_rate || '87%',
     stat_jobs: req.body.statJobs || prev.stat_jobs || '13,000+',
-    stat_programmes: req.body.statProgrammes || prev.stat_programmes || '15+'
+    stat_programmes: req.body.statProgrammes || prev.stat_programmes || '15+',
+    smtp_host: req.body.smtpHost || prev.smtp_host || '',
+    smtp_port: req.body.smtpPort || prev.smtp_port || '587',
+    smtp_user: req.body.smtpUser || prev.smtp_user || '',
+    smtp_pass: req.body.smtpPass || prev.smtp_pass || '',
+    smtp_from: req.body.smtpFrom || prev.smtp_from || ''
   };
 
   const uploadFile = async (file, folder) => {
@@ -453,6 +459,54 @@ app.post('/admin/programs/delete-image/:id', requireAuth, async (req, res) => {
 
 app.listen(PORT, () => console.log('Server running on http://localhost:' + PORT));
 }
+
+// Send acceptance email to student
+app.post('/admin/students/email/:id', requireAuth, async (req, res) => {
+  const { data: student } = await supabase.from('applications').select('*').eq('id', req.params.id).single();
+  if (!student || !student.email) {
+    return res.redirect('/admin/students?error=No email address');
+  }
+
+  const { data: settings } = await supabase.from('settings').select('*').eq('id', 1).single();
+  if (!settings || !settings.smtp_host || !settings.smtp_user || !settings.smtp_pass) {
+    return res.redirect('/admin/students?error=SMTP not configured');
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      host: settings.smtp_host,
+      port: parseInt(settings.smtp_port) || 587,
+      secure: false,
+      auth: {
+        user: settings.smtp_user,
+        pass: settings.smtp_pass
+      }
+    });
+
+    const collegeName = settings.collegename || 'Ndola Hill College';
+    const mailOptions = {
+      from: settings.smtp_from || settings.smtp_user,
+      to: student.email,
+      subject: `Congratulations! You have been accepted to ${collegeName}`,
+      html: `
+        <h2>Dear ${student.fullname},</h2>
+        <p>We are pleased to inform you that you have been <strong>accepted</strong> into the <strong>${student.program}</strong> programme at <strong>${collegeName}</strong> for the ${student.year} academic year.</p>
+        <p>Please check your <a href="https://ndola-hill-college.vercel.app/acceptance/${student.id}?nrc=${student.nrc}">acceptance letter</a> for further instructions.</p>
+        <p>Welcome to ${collegeName}!</p>
+        <hr>
+        <small>${settings.address || ''} | ${settings.phone || ''}</small>
+      `
+    };
+
+    await transporter.sendMail(mailOptions);
+    await supabase.from('applications').update({ notified: true }).eq('id', req.params.id);
+    res.redirect('/admin/students?emailSent=1&student=' + encodeURIComponent(student.fullname));
+  } catch (err) {
+    console.error('Email error:', err.message);
+    res.redirect('/admin/students?error=' + encodeURIComponent(err.message));
+  }
+});
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).render('404');
