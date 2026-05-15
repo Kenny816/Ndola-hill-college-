@@ -7,7 +7,14 @@
   <% programs.forEach(p => { %>
     <div class="col-12 col-md-6 col-lg-4">
       <div class="card h-100 shadow-sm">
-        <% if (p.image) { %><img src="<%= p.image %>" class="card-img-top" style="height:140px; object-fit:cover;"><% } %>
+        <% if (p.image) { %>
+          <div class="position-relative">
+            <img src="<%= p.image %>" class="card-img-top" style="height:140px; object-fit:cover;">
+            <form method="POST" action="/admin/programs/delete-image/<%= p.id %>" class="position-absolute top-0 end-0 m-2" onsubmit="return confirm('Remove this image?');">
+              <button type="submit" class="btn btn-sm btn-danger rounded-circle" title="Remove image" style="width:30px;height:30px;padding:0;"><i class="fas fa-trash"></i></button>
+            </form>
+          </div>
+        <% } %>
         <div class="card-body">
           <h5 class="card-title"><%= p.name %></h5>
           <p class="mb-1"><span class="badge bg-green-dark"><%= p.type %></span></p>

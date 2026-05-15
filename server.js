@@ -433,6 +433,20 @@ app.post('/admin/settings/password', async (req, res) => {
 });
 
 if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, () => console.log('Server running on http://localhost:' + PORT));
+  
+// Delete programme image only
+app.post('/admin/programs/delete-image/:id', requireAuth, async (req, res) => {
+  const { data: program } = await supabase.from('programs').select('image').eq('id', req.params.id).single();
+  if (program && program.image) {
+    const url = program.image;
+    const parts = url.split('/');
+    const path = parts.slice(parts.indexOf('uploads') + 1).join('/');
+    await supabase.storage.from('uploads').remove([path]);
+    await supabase.from('programs').update({ image: '' }).eq('id', req.params.id);
+  }
+  res.redirect('back');
+});
+
+app.listen(PORT, () => console.log('Server running on http://localhost:' + PORT));
 }
 module.exports = app;
