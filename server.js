@@ -363,7 +363,9 @@ app.post('/admin/settings', upload.fields([
     phone: req.body.phone || prev.phone,
     address: req.body.address || prev.address,
     alloweduploadformats: req.body.allowedUploadFormats || prev.alloweduploadformats,
-    alloweddownloadformats: req.body.allowedDownloadFormats || prev.alloweddownloadformats
+    alloweddownloadformats: req.body.allowedDownloadFormats || prev.alloweddownloadformats,
+    primarycolor: req.body.primaryColor || prev.primarycolor || '#0b5e2f',
+    accentcolor: req.body.accentColor || prev.accentcolor || '#d4a017'
   };
 
   const uploadFile = async (file, folder) => {

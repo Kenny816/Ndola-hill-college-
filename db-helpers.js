@@ -28,7 +28,9 @@ const settingsKeyMap = {
   alloweduploadformats: 'allowedUploadFormats',
   alloweddownloadformats: 'allowedDownloadFormats',
   partners: 'partners',
-  gallery: 'gallery'
+  gallery: 'gallery',
+primarycolor: 'primaryColor',
+  accentcolor: 'accentColor',
 };
 
 function settingsToCamel(obj) {

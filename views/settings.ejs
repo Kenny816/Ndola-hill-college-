@@ -13,6 +13,18 @@
       <div class="mb-3"><label>Phone</label><input name="phone" class="form-control" value="<%= settings.phone %>"></div>
       <div class="mb-3"><label>Address</label><input name="address" class="form-control" value="<%= settings.address %>"></div>
 
+      <h5 class="mt-4">Colors</h5>
+      <div class="row">
+        <div class="col-6">
+          <label>Primary Color</label>
+          <input type="color" name="primaryColor" class="form-control form-control-color" value="<%= settings.primaryColor || '#0b5e2f' %>">
+        </div>
+        <div class="col-6">
+          <label>Accent Color</label>
+          <input type="color" name="accentColor" class="form-control form-control-color" value="<%= settings.accentColor || '#d4a017' %>">
+        </div>
+      </div>
+
       <h5 class="mt-4">Document Formats</h5>
       <div class="mb-3">
         <label>Allowed Upload Formats</label>
