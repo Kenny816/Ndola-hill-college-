@@ -449,4 +449,9 @@ app.post('/admin/programs/delete-image/:id', requireAuth, async (req, res) => {
 
 app.listen(PORT, () => console.log('Server running on http://localhost:' + PORT));
 }
+// 404 handler
+app.use((req, res) => {
+  res.status(404).render('404');
+});
+
 module.exports = app;

@@ -12,6 +12,13 @@
         <p class="fs-5">Ndola Hill College is a premier technical and vocational institution in Zambia, dedicated to equipping students with hands-on skills for the mining, engineering, and technology sectors.</p>
         <p>Our programmes are designed in collaboration with industry partners to ensure graduates are job-ready. We focus on practical training, modern equipment, and experienced instructors.</p>
         <p>Our mission is to bridge the skills gap in Zambia's key industries and empower young people to build lasting careers.</p>
+
+        <% if (typeof site !== 'undefined' && site.vision) { %>
+          <hr>
+          <h5 class="text-green-dark">Our Vision</h5>
+          <p class="fst-italic"><%= site.vision %></p>
+        <% } %>
+
         <hr>
         <h5 class="text-green-dark">Quick Facts</h5>
         <ul>

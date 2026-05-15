@@ -50,3 +50,12 @@
 <script src="/js/main.js"></script>
 </body>
 </html>
+<script>
+  // Active nav highlight
+  const currentPath = window.location.pathname;
+  document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
+    const href = link.getAttribute('href');
+    if (href === '/' && currentPath === '/') link.classList.add('active');
+    else if (href !== '/' && currentPath.startsWith(href)) link.classList.add('active');
+  });
+</script>
