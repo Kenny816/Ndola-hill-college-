@@ -13,6 +13,26 @@
       <div class="mb-3"><label>Phone</label><input name="phone" class="form-control" value="<%= settings.phone %>"></div>
       <div class="mb-3"><label>Address</label><input name="address" class="form-control" value="<%= settings.address %>"></div>
 
+      <h5 class="mt-4">Statistics (shown on homepage)</h5>
+      <div class="row g-2">
+        <div class="col-6">
+          <label>Graduates</label>
+          <input name="statGraduates" class="form-control" value="<%= settings.statGraduates || '2500+' %>">
+        </div>
+        <div class="col-6">
+          <label>Employment Rate</label>
+          <input name="statEmploymentRate" class="form-control" value="<%= settings.statEmploymentRate || '87%' %>">
+        </div>
+        <div class="col-6">
+          <label>Industry Jobs</label>
+          <input name="statJobs" class="form-control" value="<%= settings.statJobs || '13,000+' %>">
+        </div>
+        <div class="col-6">
+          <label>Programmes</label>
+          <input name="statProgrammes" class="form-control" value="<%= settings.statProgrammes || '15+' %>">
+        </div>
+      </div>
+
       <h5 class="mt-4">Colors</h5>
       <div class="row">
         <div class="col-4">

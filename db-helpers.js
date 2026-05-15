@@ -31,6 +31,10 @@ const settingsKeyMap = {
   alloweddownloadformats: 'allowedDownloadFormats',
   partners: 'partners',
   gallery: 'gallery',
+stat_graduates: 'statGraduates',
+  stat_employment_rate: 'statEmploymentRate',
+  stat_jobs: 'statJobs',
+  stat_programmes: 'statProgrammes',,
 primarycolor: 'primaryColor',
   accentcolor: 'accentColor',
 };

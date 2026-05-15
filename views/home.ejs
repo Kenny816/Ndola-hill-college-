@@ -16,7 +16,7 @@
   </div>
 </section>
 
-<!-- Trust Badges (admin‑uploaded) -->
+<!-- Trust Badges -->
 <div class="bg-white py-3 border-bottom">
   <div class="container d-flex justify-content-center align-items-center flex-wrap gap-4">
     <span class="text-muted small">Proudly recognised by:</span>
@@ -34,9 +34,7 @@
   </div>
 </div>
 
-<!-- Main Content Container -->
 <div class="container my-5">
-
   <!-- Why Choose Us -->
   <h2 class="text-center text-green-dark mb-4 fade-up">Why Choose Ndola Hill College?</h2>
   <div class="row text-center g-4 mb-5">
@@ -63,12 +61,40 @@
     </div>
   </div>
 
-  <!-- Stats with Count-Up -->
+  <!-- Stats with Count-Up (dynamic values from admin) -->
   <div class="row text-center g-4 mb-5 fade-up" id="statsContainer">
-    <div class="col-sm-6 col-lg-3"><div class="bg-white p-4 rounded shadow-sm"><div class="display-5 fw-bold text-green-dark"><span class="count-up" data-target="2500">0</span>+</div><p>Graduates</p></div></div>
-    <div class="col-sm-6 col-lg-3"><div class="bg-white p-4 rounded shadow-sm"><div class="display-5 fw-bold text-green-dark"><span class="count-up" data-target="87">0</span>%</div><p>Employment Rate</p></div></div>
-    <div class="col-sm-6 col-lg-3"><div class="bg-white p-4 rounded shadow-sm"><div class="display-5 fw-bold text-green-dark"><span class="count-up" data-target="13000">0</span>+</div><p>Industry Jobs Supported</p></div></div>
-    <div class="col-sm-6 col-lg-3"><div class="bg-white p-4 rounded shadow-sm"><div class="display-5 fw-bold text-green-dark"><span class="count-up" data-target="15">0</span>+</div><p>Programmes</p></div></div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="bg-white p-4 rounded shadow-sm">
+        <div class="display-5 fw-bold text-green-dark" id="statGraduates">
+          <%= (typeof site !== 'undefined' && site.statGraduates) ? site.statGraduates : '2500+' %>
+        </div>
+        <p>Graduates</p>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="bg-white p-4 rounded shadow-sm">
+        <div class="display-5 fw-bold text-green-dark" id="statEmployment">
+          <%= (typeof site !== 'undefined' && site.statEmploymentRate) ? site.statEmploymentRate : '87%' %>
+        </div>
+        <p>Employment Rate</p>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="bg-white p-4 rounded shadow-sm">
+        <div class="display-5 fw-bold text-green-dark" id="statJobs">
+          <%= (typeof site !== 'undefined' && site.statJobs) ? site.statJobs : '13,000+' %>
+        </div>
+        <p>Industry Jobs Supported</p>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="bg-white p-4 rounded shadow-sm">
+        <div class="display-5 fw-bold text-green-dark" id="statProgrammes">
+          <%= (typeof site !== 'undefined' && site.statProgrammes) ? site.statProgrammes : '15+' %>
+        </div>
+        <p>Programmes</p>
+      </div>
+    </div>
   </div>
 
   <!-- Popular Programmes -->

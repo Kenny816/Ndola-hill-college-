@@ -366,7 +366,11 @@ app.post('/admin/settings', upload.fields([
     alloweddownloadformats: req.body.allowedDownloadFormats || prev.alloweddownloadformats,
     primarycolor: req.body.primaryColor || prev.primarycolor || '#0b5e2f',
     accentcolor: req.body.accentColor || prev.accentcolor || '#d4a017',
-    herocolor: req.body.heroColor || prev.herocolor || '#0b5e2f'
+    herocolor: req.body.heroColor || prev.herocolor || '#0b5e2f',
+    stat_graduates: req.body.statGraduates || prev.stat_graduates || '2500+',
+    stat_employment_rate: req.body.statEmploymentRate || prev.stat_employment_rate || '87%',
+    stat_jobs: req.body.statJobs || prev.stat_jobs || '13,000+',
+    stat_programmes: req.body.statProgrammes || prev.stat_programmes || '15+'
   };
 
   const uploadFile = async (file, folder) => {
