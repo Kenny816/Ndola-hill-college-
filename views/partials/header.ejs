@@ -67,8 +67,8 @@
     @media (max-width: 768px) {
       .hero { padding: 80px 20px; }
       .hero h2 { font-size: 1.8rem; }
-      .navbar-brand strong { font-size: 1.3rem; }
-      .navbar-brand small { font-size: 0.8rem; }
+      .navbar-brand strong { font-size: 1rem; }
+      .navbar-brand small { font-size: 0.7rem; }
       .sticky-apply {
         display: block; position: fixed; bottom: 0; left: 0; right: 0;
         background: var(--green-dark); padding: 12px; z-index: 999;
@@ -82,7 +82,7 @@
   <div class="container">
     <a class="navbar-brand" href="/">
       <% if (typeof site !== 'undefined' && site.logo) { %>
-        <img src="<%= site.logo %>" alt="<%= site.collegeName %>" height="50" class="me-2">
+        <img src="<%= site.logo %>" alt="<%= site.collegeName %>" height="140" class="me-2">
         <span class="d-none d-md-inline"><strong><%= site.collegeName %></strong><br><small class="text-white-50">"<%= site.motto || 'Developing Skills, Building Futures' %>"</small></span>
       <% } else { %>
         <strong><%= (typeof site !== 'undefined' && site.collegeName) ? site.collegeName : 'Ndola Hill College' %></strong><br>
