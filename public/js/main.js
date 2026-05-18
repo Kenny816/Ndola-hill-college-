@@ -6,7 +6,6 @@ window.addEventListener('load', function() {
 // ---------- Dark Mode Toggle ----------
 (function() {
   const html = document.documentElement;
-  const toggle = document.getElementById('darkToggle');
   if (!toggle) return;
   if (localStorage.getItem('theme') === 'dark') {
     html.setAttribute('data-theme', 'dark');
