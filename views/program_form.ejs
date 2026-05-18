@@ -1,6 +1,6 @@
 <%- include('partials/admin_header') %>
 <h2 class="text-green-dark mb-4"><%= program ? 'Edit' : 'Add' %> Programme</h2>
-<form method="POST" action="/admin/programs/save" enctype="multipart/form-data">
+<form method="POST" action="/admin/programs/save" enctype="multipart/form-data" id="programForm">
   <input type="hidden" name="id" value="<%= program ? program.id : '' %>">
   <div class="row g-3">
     <div class="col-md-6"><label>Name</label><input name="name" class="form-control" value="<%= program ? program.name : '' %>" required></div>
@@ -15,23 +15,20 @@
     <div class="col-md-4"><label>Application Fee</label><input name="applicationfee" type="number" class="form-control" value="<%= program ? program.applicationfee : '' %>"></div>
     <div class="col-md-8"><label>Entry Requirements</label><input name="entryrequirements" class="form-control" value="<%= program ? program.entryrequirements : '' %>"></div>
     <div class="col-12"><label>Description</label><textarea name="description" class="form-control" rows="3"><%= program ? program.description : '' %></textarea></div>
-    <div class="col-md-6">
-      <label>Image (optional)</label>
-      <div class="d-flex align-items-center gap-2">
-        <input type="file" name="image" class="form-control">
-        <% if (program && program.image) { %>
-          <form method="POST" action="/admin/programs/delete-image/<%= program.id %>" onsubmit="return confirm('Remove this image?');">
-            <button type="submit" class="btn btn-outline-danger btn-sm" title="Remove image"><i class="fas fa-trash"></i></button>
-          </form>
-        <% } %>
-      </div>
-    </div>
-    <% if (program && program.image) { %>
-      <div class="col-md-6">
-        <img src="<%= program.image %>" style="max-height:100px;" class="img-thumbnail">
-      </div>
-    <% } %>
+    <div class="col-md-6"><label>Image (optional)</label><input type="file" name="image" class="form-control"></div>
+    <% if (program && program.image) { %><div class="col-md-6"><img src="<%= program.image %>" style="max-height:100px;"></div><% } %>
   </div>
-  <button type="submit" class="btn btn-gold mt-3">Save Programme</button>
+  <button type="submit" class="btn btn-gold mt-3" id="newSaveBtn" style="min-width:150px;">
+    <i class="fas fa-save me-1"></i>Save Programme
+  </button>
 </form>
+
+<script>
+  // Handle the save button with loading indicator
+  document.getElementById('programForm').addEventListener('submit', function(e) {
+    var btn = document.getElementById('newSaveBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+  });
+</script>
 <%- include('partials/admin_footer') %>

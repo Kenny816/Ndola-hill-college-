@@ -4,23 +4,9 @@
   .app-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-2px); }
   .doc-link { color: var(--green-dark); font-weight: 500; }
   .doc-link:hover { text-decoration: underline; }
-  .bulk-bar { background: #fff; border-bottom: 1px solid #dee2e6; padding: 0.75rem 1rem; position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
-  .selected-count { font-weight: 600; }
 </style>
 
-<div class="bulk-bar">
-  <div>
-    <input type="checkbox" id="selectAll" class="form-check-input me-2">
-    <label for="selectAll" class="form-check-label">Select All</label>
-    <span class="selected-count ms-2 text-muted" id="selectedCount">0 selected</span>
-  </div>
-  <div>
-    <button id="bulkApprove" class="btn btn-success btn-sm"><i class="fas fa-check me-1"></i>Approve Selected</button>
-    <button id="bulkReject" class="btn btn-danger btn-sm"><i class="fas fa-times me-1"></i>Reject Selected</button>
-  </div>
-</div>
-
-<div class="d-flex justify-content-between align-items-center mb-4 mt-3 flex-wrap gap-2">
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
   <h2 class="text-green-dark mb-0"><i class="fas fa-th-large me-2"></i>Applications</h2>
   <div class="d-flex gap-2">
     <input type="text" id="searchCards" class="form-control" placeholder="Search by name or programme..." style="min-width:250px;">
@@ -28,19 +14,15 @@
   </div>
 </div>
 
-<form id="bulkForm" method="POST" action="/admin/applications/bulk-action">
 <div class="row g-4" id="appsGrid">
   <% if (applications.length === 0) { %><div class="col-12"><p class="text-muted">No pending/rejected applications.</p></div><% } %>
   <% applications.forEach(function(app, idx) { %>
     <div class="col-xl-4 col-lg-6 app-tile" data-name="<%= (app.fullname||'').toLowerCase() %>" data-program="<%= (app.program||'').toLowerCase() %>">
       <div class="app-card bg-white p-3 d-flex flex-column h-100">
         <div class="d-flex justify-content-between align-items-start mb-2">
-          <div class="d-flex align-items-start gap-2">
-            <input type="checkbox" name="selectedIds" value="<%= app.id %>" class="form-check-input mt-1 app-checkbox">
-            <div>
-              <h5 class="fw-bold mb-0"><%= app.fullname %></h5>
-              <small class="text-muted"><%= app.program %></small>
-            </div>
+          <div>
+            <h5 class="fw-bold mb-0"><%= app.fullname %></h5>
+            <small class="text-muted"><%= app.program %></small>
           </div>
           <div>
             <% if (app.status === 'Rejected') { %><span class="badge bg-danger">Rejected</span>
@@ -50,8 +32,9 @@
         <p class="mb-1 small"><i class="fas fa-phone-alt me-1 text-muted"></i><%= app.phone %></p>
         <p class="mb-2 small"><i class="fas fa-calendar-alt me-1 text-muted"></i><%= app.date %></p>
         <div class="mt-auto d-flex gap-2 flex-wrap">
-          <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#detailModal<%= idx %>"><i class="fas fa-eye me-1"></i>View Details</button>
-          <button type="button" class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal<%= idx %>"><i class="fas fa-edit me-1"></i>Edit</button>
+          <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#detailModal<%= idx %>"><i class="fas fa-eye me-1"></i>View Details</button>
+          <button class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal<%= idx %>"><i class="fas fa-edit me-1"></i>Edit</button>
+          <!-- These buttons are now type="submit" inside forms, no need for type override -->
           <form method="POST" action="/admin/review/<%= app.id %>" class="d-inline">
             <input type="hidden" name="status" value="Approved">
             <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-check me-1"></i>Accept</button>
@@ -66,17 +49,12 @@
         </div>
       </div>
     </div>
-
-    <!-- Detail Modal (unchanged) -->
+    <!-- Detail & Edit Modals (abbreviated) -->
     <div class="modal fade" id="detailModal<%= idx %>" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
-          <div class="modal-header bg-green-dark text-white">
-            <h5 class="modal-title"><%= app.fullname %> – <%= app.program %></h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-          </div>
+          <div class="modal-header bg-green-dark text-white"><h5 class="modal-title"><%= app.fullname %> – <%= app.program %></h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
           <div class="modal-body">
-            <!-- same as before, but we'll keep it short for brevity -->
             <p><strong>Application ID:</strong> <%= app.id %></p>
             <p><strong>NRC:</strong> <%= app.nrc %></p>
             <p><strong>Phone:</strong> <%= app.phone %></p>
@@ -103,14 +81,10 @@
         </div>
       </div>
     </div>
-    <!-- Edit Modal (unchanged) -->
     <div class="modal fade" id="editModal<%= idx %>" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header bg-green-dark text-white">
-            <h5 class="modal-title">Edit Application – <%= app.fullname %></h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-          </div>
+          <div class="modal-header bg-green-dark text-white"><h5 class="modal-title">Edit Application – <%= app.fullname %></h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
           <form method="POST" action="/admin/applications/edit/<%= app.id %>">
             <div class="modal-body">
               <div class="mb-3"><label>Full Name</label><input type="text" name="fullName" class="form-control" value="<%= app.fullname %>" required></div>
@@ -126,10 +100,8 @@
     </div>
   <% }) %>
 </div>
-</form>
 
 <script>
-  // Search cards
   document.getElementById('searchCards').addEventListener('input', function() {
     var q = this.value.toLowerCase();
     document.querySelectorAll('.app-tile').forEach(function(tile) {
@@ -137,46 +109,6 @@
       var prog = tile.getAttribute('data-program');
       tile.style.display = (name.includes(q) || prog.includes(q)) ? '' : 'none';
     });
-  });
-
-  // Bulk actions
-  const checkboxes = document.querySelectorAll('.app-checkbox');
-  const selectAll = document.getElementById('selectAll');
-  const selectedCount = document.getElementById('selectedCount');
-  const bulkForm = document.getElementById('bulkForm');
-  const bulkApprove = document.getElementById('bulkApprove');
-  const bulkReject = document.getElementById('bulkReject');
-
-  function updateCount() {
-    const checked = document.querySelectorAll('.app-checkbox:checked').length;
-    selectedCount.textContent = checked + ' selected';
-  }
-
-  selectAll.addEventListener('change', function() {
-    checkboxes.forEach(cb => cb.checked = selectAll.checked);
-    updateCount();
-  });
-
-  checkboxes.forEach(cb => cb.addEventListener('change', updateCount));
-
-  bulkApprove.addEventListener('click', function() {
-    if (!confirm('Approve selected applications?')) return;
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = 'action';
-    input.value = 'Approved';
-    bulkForm.appendChild(input);
-    bulkForm.submit();
-  });
-
-  bulkReject.addEventListener('click', function() {
-    if (!confirm('Reject selected applications?')) return;
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = 'action';
-    input.value = 'Rejected';
-    bulkForm.appendChild(input);
-    bulkForm.submit();
   });
 </script>
 <%- include('partials/admin_footer') %>

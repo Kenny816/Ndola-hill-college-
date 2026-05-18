@@ -2,44 +2,124 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Acceptance Letter - <%= application.fullName %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acceptance Letter – <%= (typeof college !== 'undefined' && college.name) ? college.name : 'Ndola Hill College' %></title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     @media print {
       .no-print { display: none !important; }
-      body { padding: 0; }
-      .letter-box { max-width: 100%; padding: 1.5rem;  box-shadow: none !important; border: none !important; }
+      body { padding: 0; margin: 0; }
+      .letter-box { box-shadow: none !important; border: none !important; max-width: 100%; padding: 2rem; }
     }
-    .letter-box { max-width: 100%; padding: 1.5rem;  max-width: 800px; margin: 2rem auto; background: #fff; padding: 3rem; box-shadow: 0 0 20px rgba(0,0,0,0.1); border: 1px solid #dee2e6; }
-    .letter-header { text-align: center; margin-bottom: 2rem; }
-    .letter-header img { max-height: 80px; margin-bottom: 1rem; }
+    .letter-box {
+      max-width: 800px;
+      margin: 2rem auto;
+      background: #fff;
+      padding: 3rem;
+      box-shadow: 0 0 30px rgba(0,0,0,0.1);
+      border: 1px solid #dee2e6;
+      font-family: 'Georgia', serif;
+      color: #333;
+    }
+    .letter-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      border-bottom: 3px solid <%= (typeof college !== 'undefined' && college.primarycolor) ? college.primarycolor : '#0b5e2f' %>;
+      padding-bottom: 1.5rem;
+    }
+    .letter-header img {
+      max-height: 90px;
+      margin-bottom: 1rem;
+    }
+    .letter-header h2 {
+      color: <%= (typeof college !== 'undefined' && college.primarycolor) ? college.primarycolor : '#0b5e2f' %>;
+      font-weight: bold;
+      margin-bottom: 0.25rem;
+    }
+    .letter-header p { margin: 0; font-size: 0.95rem; }
+    .letter-body { font-size: 1rem; line-height: 1.7; }
+    .letter-body h5 { color: <%= (typeof college !== 'undefined' && college.primarycolor) ? college.primarycolor : '#0b5e2f' %>; margin-top: 1.5rem; }
+    .checklist { list-style: none; padding: 0; }
+    .checklist li { padding: 0.4rem 0; border-bottom: 1px dotted #ccc; }
+    .checklist li i { color: #0b5e2f; margin-right: 0.5rem; }
+    .signature { margin-top: 3rem; }
   </style>
 </head>
 <body>
 <div class="letter-box">
+  <!-- Letterhead -->
   <div class="letter-header">
-    <% if (college.logo) { %><img src="<%= college.logo %>" class="img-fluid" alt="Logo"><% } %>
-    <h2><%= college.name %></h2>
-    <p><%= college.address %></p>
+    <% if (typeof college !== 'undefined' && college.logo) { %>
+      <img src="<%= college.logo %>" alt="College Logo">
+    <% } %>
+    <h2><%= (typeof college !== 'undefined' && college.name) ? college.name : 'Ndola Hill College' %></h2>
+    <p><%= (typeof college !== 'undefined' && college.address) ? college.address : 'Mpelembe House, 5th Floor, Room 509, Ndola, Zambia' %></p>
+    <p>
+      <i class="fas fa-phone me-1"></i> <%= (typeof college !== 'undefined' && college.phone) ? college.phone : '+260 97 1234567' %>
+      &nbsp;|&nbsp;
+      <i class="fas fa-envelope me-1"></i> <%= (typeof college !== 'undefined' && college.email) ? college.email : 'info@ndolahillcollege.edu.zm' %>
+    </p>
   </div>
-  <hr>
+
+  <!-- Date and Student Info -->
   <p><strong>Date:</strong> <%= new Date().toLocaleDateString('en-ZM', { year: 'numeric', month: 'long', day: 'numeric' }) %></p>
-  <p><strong>To:</strong> <%= application.fullName %></p>
-  <p><strong>NRC:</strong> <%= application.nrc %></p>
-  <br>
-  <h4 class="text-success">Acceptance Letter</h4>
-  <p>Dear <%= application.fullName %>,</p>
-  <p>We are pleased to inform you that you have been accepted into the <strong><%= application.program %></strong> programme at <strong><%= college.name %></strong> for the <strong><%= application.year %></strong> academic year.</p>
-  <p>Your application demonstrated the qualifications and drive that we seek in our students, and we believe you will succeed here.</p>
-  <p>Full programme details, including tuition fees, start dates, and orientation information, will be provided upon confirmation of your place. Please contact our admissions office if you have any questions.</p>
-  <p>We look forward to welcoming you to <%= college.name %>.</p>
-  <br>
-  <p>Sincerely,</p>
-  <p><strong>Admissions Office</strong><br><%= college.name %><br><%= college.email %></p>
-  <hr>
-  <div class="text-center no-print mt-4">
-    <button onclick="window.print()" class="btn btn-gold"><i class="fas fa-print me-1"></i>Print / Save as PDF</button>
+  <p><strong>To:</strong> <%= (typeof application !== 'undefined' && application.fullname) ? application.fullname : 'Student Name' %></p>
+  <p><strong>NRC:</strong> <%= (typeof application !== 'undefined' && application.nrc) ? application.nrc : '—' %></p>
+  <p><strong>Application ID:</strong> <%= (typeof application !== 'undefined' && application.id) ? application.id : '—' %></p>
+
+  <!-- Subject -->
+  <div class="letter-body mt-4">
+    <h5><i class="fas fa-check-circle me-2"></i> Acceptance Letter</h5>
+    <p>Dear <strong><%= (typeof application !== 'undefined' && application.fullname) ? application.fullname : 'Student' %></strong>,</p>
+    <p>
+      We are pleased to inform you that you have been <strong>accepted</strong> into the 
+      <strong><%= (typeof application !== 'undefined' && application.program) ? application.program : 'Programme' %></strong> programme at 
+      <strong><%= (typeof college !== 'undefined' && college.name) ? college.name : 'Ndola Hill College' %></strong> 
+      for the <strong><%= (typeof application !== 'undefined' && application.year) ? application.year : '2026' %></strong> academic year.
+    </p>
+
+    <p>Your application demonstrated the qualifications and drive that we seek in our students, and we believe you will excel here.</p>
+
+    <!-- What to bring -->
+    <h5><i class="fas fa-suitcase me-2"></i> What to Bring When Reporting</h5>
+    <ul class="checklist">
+      <li><i class="fas fa-id-card"></i> Original NRC and a photocopy</li>
+      <li><i class="fas fa-file-alt"></i> Original Grade 12 certificate / results slip and a photocopy</li>
+      <li><i class="fas fa-camera"></i> 2 recent passport‑size photos</li>
+      <li><i class="fas fa-receipt"></i> Proof of payment of the application fee (bank deposit slip or mobile money receipt)</li>
+      <li><i class="fas fa-pen"></i> Stationery (notebooks, pens, calculator if required)</li>
+      <li><i class="fas fa-stethoscope"></i> Medical examination report from a recognised clinic</li>
+      <li><i class="fas fa-bed"></i> Bedding and personal effects (if staying in accommodation)</li>
+      <li><i class="fas fa-file-signature"></i> Signed copy of this acceptance letter</li>
+    </ul>
+
+    <!-- Additional info -->
+    <h5><i class="fas fa-info-circle me-2"></i> Important Information</h5>
+    <p>Orientation week begins on <strong>Monday, 1st September 2026</strong>. All new students are required to attend. Registration and fee payment must be completed by <strong>29th August 2026</strong>.</p>
+    <p>For any enquiries, please contact our admissions office:</p>
+    <p>
+      <i class="fas fa-phone me-1"></i> <%= (typeof college !== 'undefined' && college.phone) ? college.phone : '+260 97 1234567' %>
+      &nbsp;|&nbsp;
+      <i class="fas fa-envelope me-1"></i> <%= (typeof college !== 'undefined' && college.email) ? college.email : 'info@ndolahillcollege.edu.zm' %>
+    </p>
+
+    <!-- Signature -->
+    <div class="signature">
+      <p>We look forward to welcoming you.</p>
+      <p>Sincerely,</p>
+      <br><br>
+      <p><strong>Admissions Office</strong><br>
+      <%= (typeof college !== 'undefined' && college.name) ? college.name : 'Ndola Hill College' %></p>
+    </div>
   </div>
 </div>
+
+<!-- Print Button -->
+<div class="text-center no-print mb-5">
+  <button onclick="window.print()" class="btn btn-gold btn-lg"><i class="fas fa-print me-1"></i> Print / Save as PDF</button>
+  <button onclick="window.history.back()" class="btn btn-outline-secondary btn-lg ms-2"><i class="fas fa-arrow-left me-1"></i> Go Back</button>
+</div>
+
 </body>
 </html>
